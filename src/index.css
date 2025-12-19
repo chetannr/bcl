@@ -27,10 +27,15 @@
   }
   
   body {
+    font-family: 'Quicksand', sans-serif;
     background-color: var(--color-neutral-50);
     color: var(--color-neutral-900);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
   }
 }
 

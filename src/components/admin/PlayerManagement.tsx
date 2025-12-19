@@ -41,7 +41,7 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
   }, [allPlayers, searchQuery, statusFilter, categoryFilter, playerTypeFilter, isValidPlayerFilter]);
 
   const categories = useMemo(() => ['all', 'Batsman', 'Bowler', 'All Rounder'], []);
-  const playerTypes = useMemo(() => ['all', 'Regular', 'Premium'], []);
+  const playerTypes = useMemo(() => ['all', 'Regular', 'ICON'], []);
   const isValidPlayerOptions = useMemo(() => ['all', 'Y', 'N'], []);
 
   if (isLoading) {

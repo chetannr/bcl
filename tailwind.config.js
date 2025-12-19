@@ -30,8 +30,10 @@ export default {
         },
       },
       fontFamily: {
-        heading: ['Inter', 'system-ui', 'sans-serif'],
-        body: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
+        body: ['Quicksand', 'sans-serif'],
       },
     },
   },

@@ -4,6 +4,7 @@ import { CurrentPlayerDisplay } from '../../components/display/CurrentPlayerDisp
 import { TeamStatsPanel } from '../../components/display/TeamStatsPanel';
 import { AuctionStatus } from '../../components/display/AuctionStatus';
 import { CelebrationEffects } from '../../components/display/CelebrationEffects';
+import { useAuctionState, usePlayer } from '../../lib/queries';
 
 export const Route = createFileRoute('/display/')({
   component: DisplayView,
@@ -14,6 +15,10 @@ function DisplayView() {
   // Enable real-time updates
   console.log('[Route: /display] Enabling real-time updates...');
   useRealtimeAuction();
+  
+  const { data: auctionState } = useAuctionState();
+  const { data: currentPlayer } = usePlayer(auctionState?.current_player_id || null);
+  const hasPlayer = !!currentPlayer;
 
   return (
     <div
@@ -36,16 +41,24 @@ function DisplayView() {
 
           {/* Main Player Display */}
           <div className="grid grid-cols-12 items-center justify-center px-4 py-8 min-h-[60vh]">
-          <div className='col-span-4 flex justify-center items-center'>
-              <img
-                src="/assets/teams/bcl-bidding.jpg"
-                alt="BCL Bellandur Cricket Logo"
-                className="w-full object-contain drop-shadow-xl  max-w-96"
-              />
-            </div>
-            <div className='col-span-8'>
-              <CurrentPlayerDisplay />
-            </div>
+            {hasPlayer ? (
+              <>
+                <div className='col-span-4 flex justify-center items-center'>
+                  <img
+                    src="/assets/teams/bcl-bidding.jpg"
+                    alt="BCL Bellandur Cricket Logo"
+                    className="w-full object-contain drop-shadow-xl  max-w-96"
+                  />
+                </div>
+                <div className='col-span-8'>
+                  <CurrentPlayerDisplay />
+                </div>
+              </>
+            ) : (
+              <div className='col-span-12'>
+                <CurrentPlayerDisplay />
+              </div>
+            )}
           </div>
 
           {/* Team Stats Panel */}
