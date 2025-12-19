@@ -7,8 +7,11 @@ import { EditTransactionModal } from '../../components/admin/EditTransactionModa
 import { PlayerManagement } from '../../components/admin/PlayerManagement';
 import { EditPlayerModal } from '../../components/admin/EditPlayerModal';
 import { AddPlayerModal } from '../../components/admin/AddPlayerModal';
+import { TeamManagement } from '../../components/admin/TeamManagement';
+import { EditTeamModal } from '../../components/admin/EditTeamModal';
+import { AddTeamModal } from '../../components/admin/AddTeamModal';
 import { Home, Download } from 'lucide-react';
-import type { AuctionResult, Player } from '../../lib/types';
+import type { AuctionResult, Player, Team } from '../../lib/types';
 
 export const Route = createFileRoute('/admin/manage')({
   component: AdminManage,
@@ -21,9 +24,12 @@ function AdminManage() {
   const [editingTransaction, setEditingTransaction] = useState<AuctionResult | null>(null);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
-  const [activeTab, setActiveTab] = useState<'transactions' | 'players'>('transactions');
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
+  const [showAddTeam, setShowAddTeam] = useState(false);
+  const [activeTab, setActiveTab] = useState<'transactions' | 'players' | 'teams'>('transactions');
   console.log('[Route: /admin/manage] Editing transaction:', editingTransaction);
   console.log('[Route: /admin/manage] Editing player:', editingPlayer);
+  console.log('[Route: /admin/manage] Editing team:', editingTeam);
 
   const handleEdit = (transaction: AuctionResult) => {
     console.log('[Route: /admin/manage] handleEdit called for transaction:', transaction.id);
@@ -231,13 +237,26 @@ function AdminManage() {
             >
               Player Management
             </button>
+            <button
+              onClick={() => {
+                console.log('[Route: /admin/manage] Switching to teams tab');
+                setActiveTab('teams');
+              }}
+              className={`px-4 py-2 font-medium transition-colors ${
+                activeTab === 'teams'
+                  ? 'text-primary-600 border-b-2 border-primary-600'
+                  : 'text-neutral-600 hover:text-neutral-900'
+              }`}
+            >
+              Team Management
+            </button>
           </div>
         </div>
 
         {/* Content */}
         {activeTab === 'transactions' ? (
           <TransactionTable onEdit={handleEdit} onDelete={handleDelete} />
-        ) : (
+        ) : activeTab === 'players' ? (
           <PlayerManagement
             onEditPlayer={(player) => {
               console.log('[Route: /admin/manage] Opening edit player modal for:', player.id);
@@ -246,6 +265,17 @@ function AdminManage() {
             onAddPlayer={() => {
               console.log('[Route: /admin/manage] Opening add player modal');
               setShowAddPlayer(true);
+            }}
+          />
+        ) : (
+          <TeamManagement
+            onEditTeam={(team) => {
+              console.log('[Route: /admin/manage] Opening edit team modal for:', team.id);
+              setEditingTeam(team);
+            }}
+            onAddTeam={() => {
+              console.log('[Route: /admin/manage] Opening add team modal');
+              setShowAddTeam(true);
             }}
           />
         )}
@@ -280,6 +310,30 @@ function AdminManage() {
           onSave={() => {
             console.log('[Route: /admin/manage] Player added, invalidating queries');
             queryClient.invalidateQueries({ queryKey: ['players'] });
+          }}
+        />
+      )}
+
+      {/* Edit Team Modal */}
+      {editingTeam && (
+        <EditTeamModal
+          team={editingTeam}
+          onClose={() => setEditingTeam(null)}
+          onSave={() => {
+            console.log('[Route: /admin/manage] Team updated, invalidating queries');
+            queryClient.invalidateQueries({ queryKey: ['teams'] });
+            queryClient.invalidateQueries({ queryKey: ['auction-results'] });
+          }}
+        />
+      )}
+
+      {/* Add Team Modal */}
+      {showAddTeam && (
+        <AddTeamModal
+          onClose={() => setShowAddTeam(false)}
+          onSave={() => {
+            console.log('[Route: /admin/manage] Team added, invalidating queries');
+            queryClient.invalidateQueries({ queryKey: ['teams'] });
           }}
         />
       )}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTeams, useSellPlayer, useMarkPlayerUnsold, useAuctionResults } from '../../lib/queries';
 import type { Player } from '../../lib/types';
 import { validateBidAmount, validateTeamBalance } from '../../utils/validation';
@@ -19,16 +19,20 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
   const { data: results } = useAuctionResults();
   const sellPlayer = useSellPlayer();
   const markUnsold = useMarkPlayerUnsold();
+  const previousPlayerIdRef = useRef<string | undefined>(currentPlayer?.id);
 
   useEffect(() => {
-    setBidAmount('');
-    setSelectedTeamId('');
-    setError('');
+    if (previousPlayerIdRef.current !== currentPlayer?.id) {
+      previousPlayerIdRef.current = currentPlayer?.id;
+      setBidAmount('');
+      setSelectedTeamId('');
+      setError('');
+    }
   }, [currentPlayer?.id]);
 
   if (!currentPlayer) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-lg shadow px-8 py-8">
         <p className="text-neutral-500 text-center">No player selected</p>
       </div>
     );
@@ -99,13 +103,15 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
     selectedTeam &&
     amount <= selectedTeam.current_balance;
 
+  const eligibleTeams = teams?.filter((team) => team.current_balance >= currentPlayer.base_price) || [];
+
   return (
-    <div className="bg-white rounded-lg shadow p-6 space-y-4">
+    <div className="bg-white rounded-lg shadow px-8 py-8 space-y-2">
       <h3 className="text-lg font-bold text-neutral-900">Auction Controls</h3>
 
       {/* Bid Amount Input */}
       <div>
-        <label className="block text-sm font-medium text-neutral-700 mb-1">
+        <label className="block text-sm font-medium text-neutral-700 mb-2">
           Bid Amount
         </label>
         <input
@@ -118,50 +124,91 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
           min={currentPlayer.base_price}
           step="100"
           placeholder={`Min: ${formatCurrency(currentPlayer.base_price)}`}
-          className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full px-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
         />
         {bidAmount && (
-          <div className="mt-1 text-sm text-neutral-600">
+          <div className="mt-2 text-sm text-neutral-600">
             {formatCurrency(amount)}
           </div>
         )}
       </div>
 
-      {/* Team Selector */}
+      {/* Team Selector - Mini Cards */}
       <div>
-        <label className="block text-sm font-medium text-neutral-700 mb-1">
+        <label className="block text-sm font-medium text-neutral-700 mb-3">
           Select Team
         </label>
-        <select
-          value={selectedTeamId}
-          onChange={(e) => {
-            setSelectedTeamId(e.target.value);
-            setError('');
-          }}
-          className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-        >
-          <option value="">Choose a team...</option>
-          {teams
-            ?.filter((team) => team.current_balance >= currentPlayer.base_price)
-            .map((team) => (
-              <option key={team.id} value={team.id}>
-                {team.name} (Balance: {formatCurrency(team.current_balance)})
-              </option>
-            ))}
-        </select>
+        <div className="grid grid-cols-4 gap-3 max-h-[400px] overflow-y-auto">
+          {eligibleTeams.length === 0 ? (
+            <div className="col-span-2 text-sm text-neutral-500 text-center py-4">
+              No teams with sufficient balance
+            </div>
+          ) : (
+            eligibleTeams.map((team) => {
+              const isSelected = selectedTeamId === team.id;
+              const canAfford = amount > 0 ? amount <= team.current_balance : true;
+              
+              return (
+                <button
+                  key={team.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedTeamId(team.id);
+                    setError('');
+                  }}
+                  disabled={!canAfford}
+                  className={`
+                    relative p-1 rounded-lg border-2 transition-all text-left
+                    min-h-[88px] flex flex-row items-center gap-3
+                    ${isSelected
+                      ? 'border-primary-500 bg-primary-50 shadow-md'
+                      : 'border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm'
+                    }
+                    ${!canAfford ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                    focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                  `}
+                >
+                  <img
+                    src={team.logo_url}
+                    alt={team.name}
+                    className="w-full max-w-16 max-h-16 h-full object-contain flex-shrink-0 rounded-lg"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                    }}
+                  />
+                  <div className="flex flex-col gap-1 flex-1 min-w-0">
+                    <div className="text-xs font-semibold text-neutral-900">
+                      {team.name}
+                    </div>
+                    <div className="text-md font-semibold text-neutral-600 font-mono">
+                      {formatCurrency(team.current_balance)}
+                    </div>
+                  </div>
+                  {isSelected && (
+                    <div className="absolute top-1 right-1">
+                      <div className="w-4 h-4 bg-primary-500 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-3 h-3 text-white" />
+                      </div>
+                    </div>
+                  )}
+                </button>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {/* Team Balance Info */}
       {selectedTeam && (
-        <div className="p-3 bg-neutral-50 rounded-lg">
-          <div className="text-sm text-neutral-600">
-            <div>Team: <span className="font-semibold">{selectedTeam.name}</span></div>
+        <div className="p-4 bg-neutral-50 rounded-lg">
+          <div className="text-sm text-neutral-600 space-y-1">
+            <div>Team: <span className="font-semibold text-neutral-900">{selectedTeam.name}</span></div>
             <div>
-              Current Balance: <span className="font-semibold">{formatCurrency(selectedTeam.current_balance)}</span>
+              Current Balance: <span className="font-semibold text-neutral-900">{formatCurrency(selectedTeam.current_balance)}</span>
             </div>
             {amount > 0 && (
               <div>
-                After Purchase: <span className="font-semibold">
+                After Purchase: <span className="font-semibold text-neutral-900">
                   {formatCurrency(selectedTeam.current_balance - amount)}
                 </span>
               </div>
@@ -172,17 +219,17 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
 
       {/* Error Message */}
       {error && (
-        <div className="p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-700 text-sm">
+        <div className="p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-700 text-sm">
           {error}
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="space-y-2">
+      <div className="space-y-3 pt-2">
         <button
           onClick={handleSell}
           disabled={!isValidBid || sellPlayer.isPending}
-          className="w-full bg-success-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-success-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-success-500 text-white py-4 px-4 rounded-lg font-medium hover:bg-success-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[52px]"
         >
           <CheckCircle className="w-5 h-5" />
           {sellPlayer.isPending ? 'Processing...' : 'Mark as SOLD'}
@@ -191,7 +238,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
         <button
           onClick={handleMarkUnsold}
           disabled={markUnsold.isPending}
-          className="w-full bg-neutral-200 text-neutral-700 py-3 px-4 rounded-lg font-medium hover:bg-neutral-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-neutral-200 text-neutral-700 py-4 px-4 rounded-lg font-medium hover:bg-neutral-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[52px]"
         >
           <XCircle className="w-5 h-5" />
           {markUnsold.isPending ? 'Processing...' : 'Mark as UNSOLD'}
@@ -199,7 +246,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
 
         <button
           onClick={onNext}
-          className="w-full bg-primary-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-600 transition-colors flex items-center justify-center gap-2"
+          className="w-full bg-primary-500 text-white py-4 px-4 rounded-lg font-medium hover:bg-primary-600 transition-colors flex items-center justify-center gap-2 min-h-[52px]"
         >
           <ArrowRight className="w-5 h-5" />
           Next Player

@@ -33,6 +33,10 @@ export interface Database {
           base_price: number;
           status: 'unsold' | 'sold' | 'bidding';
           auction_order: number | null;
+          auction_serial_number: number | null;
+          is_valid_player: string;
+          jersey_number: number | null;
+          jersey_name: string;
           created_at: string;
         };
         Insert: {
@@ -45,6 +49,10 @@ export interface Database {
           base_price?: number;
           status?: 'unsold' | 'sold' | 'bidding';
           auction_order?: number | null;
+          auction_serial_number?: number | null;
+          is_valid_player?: string;
+          jersey_number?: number | null;
+          jersey_name?: string;
         };
         Update: Partial<Database['public']['Tables']['players']['Insert']>;
       };

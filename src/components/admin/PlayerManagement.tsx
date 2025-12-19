@@ -12,6 +12,8 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'unsold' | 'sold' | 'bidding'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [playerTypeFilter, setPlayerTypeFilter] = useState<string>('all');
+  const [isValidPlayerFilter, setIsValidPlayerFilter] = useState<string>('all');
   const [viewingPlayer, setViewingPlayer] = useState<Player | null>(null);
 
   const { data: allPlayers, isLoading } = usePlayers();
@@ -26,17 +28,21 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
       players = players.filter((player) => player.status === statusFilter);
     }
 
-    // Filter by search and category
+    // Filter by search, category, player type, and is valid player
     return players.filter((player) => {
       const matchesSearch =
         player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         player.phone.includes(searchQuery);
       const matchesCategory = categoryFilter === 'all' || player.category === categoryFilter;
-      return matchesSearch && matchesCategory;
+      const matchesPlayerType = playerTypeFilter === 'all' || player.player_type === playerTypeFilter;
+      const matchesIsValidPlayer = isValidPlayerFilter === 'all' || player.is_valid_player === isValidPlayerFilter;
+      return matchesSearch && matchesCategory && matchesPlayerType && matchesIsValidPlayer;
     });
-  }, [allPlayers, searchQuery, statusFilter, categoryFilter]);
+  }, [allPlayers, searchQuery, statusFilter, categoryFilter, playerTypeFilter, isValidPlayerFilter]);
 
   const categories = useMemo(() => ['all', 'Batsman', 'Bowler', 'All Rounder'], []);
+  const playerTypes = useMemo(() => ['all', 'Regular', 'Premium'], []);
+  const isValidPlayerOptions = useMemo(() => ['all', 'Y', 'N'], []);
 
   if (isLoading) {
     return (
@@ -109,6 +115,42 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
             </button>
           ))}
         </div>
+
+        {/* Player Type Filter */}
+        <div className="flex gap-2 flex-wrap">
+          <span className="text-sm font-medium text-neutral-700 self-center">Player Type:</span>
+          {playerTypes.map((type) => (
+            <button
+              key={type}
+              onClick={() => setPlayerTypeFilter(type)}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                playerTypeFilter === type
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+            >
+              {type === 'all' ? 'All' : type}
+            </button>
+          ))}
+        </div>
+
+        {/* Is Valid Player Filter */}
+        <div className="flex gap-2 flex-wrap">
+          <span className="text-sm font-medium text-neutral-700 self-center">Is Valid Player:</span>
+          {isValidPlayerOptions.map((option) => (
+            <button
+              key={option}
+              onClick={() => setIsValidPlayerFilter(option)}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                isValidPlayerFilter === option
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
+            >
+              {option === 'all' ? 'All' : option === 'Y' ? 'Yes' : 'No'}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Player List */}
@@ -132,6 +174,21 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
                 Phone
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                Player Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                Auction Serial
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                Is Valid
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                Jersey Number
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                Jersey Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
@@ -142,7 +199,7 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
           <tbody className="bg-white divide-y divide-neutral-200">
             {filteredPlayers.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-neutral-500">
+                <td colSpan={12} className="px-6 py-8 text-center text-neutral-500">
                   No players found
                 </td>
               </tr>
@@ -177,6 +234,29 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-neutral-600">{player.phone}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-neutral-600">{player.player_type || '-'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-neutral-600">{player.auction_serial_number ?? '-'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                        player.is_valid_player === 'Y'
+                          ? 'bg-success-500 text-white'
+                          : 'bg-neutral-200 text-neutral-700'
+                      }`}
+                    >
+                      {player.is_valid_player === 'Y' ? 'Yes' : 'No'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-neutral-600">{player.jersey_number ?? '-'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-neutral-600">{player.jersey_name || '-'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span

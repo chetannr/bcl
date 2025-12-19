@@ -10,6 +10,7 @@ interface PlayerQueueProps {
 
 export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPlayerId }: PlayerQueueProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [serialNumberSearch, setSerialNumberSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const { data: players, isLoading } = usePlayers('unsold');
   const setNextPlayer = useSetNextPlayer();
@@ -22,10 +23,28 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
       const matchesSearch =
         player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         player.phone.includes(searchQuery);
+      
+      // If serial number search ends with space, do exact match; otherwise use includes
+      let matchesSerialNumber = true;
+      if (serialNumberSearch !== '') {
+        if (player.auction_serial_number === null) {
+          matchesSerialNumber = false;
+        } else {
+          const searchValue = serialNumberSearch.trim();
+          const playerSerial = player.auction_serial_number.toString();
+          // If search ends with space, do exact match
+          if (serialNumberSearch.endsWith(' ')) {
+            matchesSerialNumber = playerSerial === searchValue;
+          } else {
+            matchesSerialNumber = playerSerial.includes(serialNumberSearch);
+          }
+        }
+      }
+      
       const matchesCategory = categoryFilter === 'all' || player.category === categoryFilter;
-      return matchesSearch && matchesCategory;
+      return matchesSearch && matchesSerialNumber && matchesCategory;
     });
-  }, [players, searchQuery, categoryFilter]);
+  }, [players, searchQuery, serialNumberSearch, categoryFilter]);
 
   if (isLoading) {
     return (
@@ -52,6 +71,18 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
           placeholder="Search by name or phone..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+        />
+      </div>
+
+      {/* Serial Number Search */}
+      <div className="relative mb-3">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 w-4 h-4" />
+        <input
+          type="text"
+          placeholder="Search by serial number..."
+          value={serialNumberSearch}
+          onChange={(e) => setSerialNumberSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
         />
       </div>
@@ -100,7 +131,13 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
                   }}
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-neutral-900 truncate">{player.name}</div>
+                  <div className="font-semibold text-neutral-900">
+                    {player.auction_serial_number !== null && (
+                      <span className="ml-2 text-primary-600 font-normal">
+                        #{player.auction_serial_number}
+                      </span>
+                    )}{' '}{player.name}
+                  </div>
                   <div className="text-sm text-neutral-600">
                     {player.category} • {player.age}
                   </div>

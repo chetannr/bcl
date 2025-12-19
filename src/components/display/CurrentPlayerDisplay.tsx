@@ -49,7 +49,7 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
           <div className="flex flex-col items-center justify-center h-full text-white px-8">
             {/* Player Name */}
             <h1 className={`text-5xl md:text-6xl font-bold mb-4 text-center drop-shadow-lg ${isSold ? 'animate-celebration-text' : ''}`}>
-              {player.name}
+              {player.auction_serial_number}{' : '}{player.name}
             </h1>
       {/* Player Details */}
       <div className="flex flex-col justify-center items-center gap-6 text-2xl md:text-3xl mb-8">
@@ -195,12 +195,12 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
         
       </div>
     
-      <div className='col-span-6'>
+      <div className='col-span-6 flex justify-center items-center'>
           {/* Player Photo */}
             <img
               src={player.photo_url}
               alt={player.name}
-              className={`w-full max-h-[388px] box-border object-contain border-8 shadow-2xl ${isSold ? 'border-[#39ff14] radium-border-glow' : 'border-white'}`}
+              className={`w-full max-h-[388px] max-w-[384px] box-border object-contain border-8 shadow-2xl ${isSold ? 'border-[#39ff14] radium-border-glow' : 'border-white'}`}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/assets/player-template.png';
               }}

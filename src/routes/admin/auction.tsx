@@ -43,7 +43,7 @@ function AdminAuction() {
     if (nextPlayer) {
       console.log('[Route: /admin/auction] Setting next player to:', nextPlayer.id);
       setNextPlayer.mutate(nextPlayer.id, {
-        onError: (error: any) => {
+        onError: (error: Error) => {
           console.error('[Route: /admin/auction] Error setting next player:', error);
           alert(`Failed to set next player: ${error.message || 'Unknown error'}`);
         },
@@ -54,7 +54,7 @@ function AdminAuction() {
     } else {
       console.log('[Route: /admin/auction] No next player, setting to null');
       setNextPlayer.mutate(null, {
-        onError: (error: any) => {
+        onError: (error: Error) => {
           console.error('[Route: /admin/auction] Error clearing current player:', error);
           alert(`Failed to clear current player: ${error.message || 'Unknown error'}`);
         },
@@ -68,7 +68,7 @@ function AdminAuction() {
   const handleSelectPlayer = (player: Player) => {
     console.log('[Route: /admin/auction] handleSelectPlayer called with player:', player.id, player.name);
     setNextPlayer.mutate(player.id, {
-      onError: (error: any) => {
+      onError: (error: Error) => {
         console.error('[Route: /admin/auction] Error setting next player:', error);
         alert(`Failed to set next player: ${error.message || 'Unknown error'}`);
       },
@@ -113,17 +113,14 @@ function AdminAuction() {
             />
           </div>
 
-          {/* Current Player Display - Center */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-9 flex flex-col gap-4">
+            {/* Current Player Display - Center */}
             <PlayerCard />
-          </div>
-
-          {/* Auction Controls - Right Sidebar */}
-          <div className="lg:col-span-3">
-            <AuctionControls
-              currentPlayer={currentPlayer ?? null}
-              onNext={handleNextPlayer}
-            />
+            {/* Auction Controls - Right Sidebar */}
+              <AuctionControls
+                currentPlayer={currentPlayer ?? null}
+                onNext={handleNextPlayer}
+              />
           </div>
         </div>
       </div>

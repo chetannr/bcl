@@ -43,8 +43,68 @@ If you want to store player photos in Supabase Storage:
 
 1. Go to Storage in Supabase dashboard
 2. Create a bucket named `player-photos`
-3. Set it to public
-4. Upload player photos (named by phone number)
+3. Set it to **public**
+4. **CRITICAL: Set up RLS Policies** - This is required even for public buckets!
+
+### Option A: Using SQL Editor (Recommended)
+
+Go to **SQL Editor** in Supabase dashboard and run this SQL:
+
+```sql
+-- Allow public (anonymous) users to read/view player photos
+CREATE POLICY "Public can view player photos"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'player-photos');
+
+-- Allow public (anonymous) users to upload player photos
+-- This allows uploads using the anon key (no authentication required)
+CREATE POLICY "Public can upload player photos"
+ON storage.objects FOR INSERT
+TO public
+WITH CHECK (bucket_id = 'player-photos');
+
+-- Allow public (anonymous) users to update/upsert player photos
+CREATE POLICY "Public can update player photos"
+ON storage.objects FOR UPDATE
+TO public
+USING (bucket_id = 'player-photos')
+WITH CHECK (bucket_id = 'player-photos');
+
+-- Allow public (anonymous) users to delete player photos (optional)
+CREATE POLICY "Public can delete player photos"
+ON storage.objects FOR DELETE
+TO public
+USING (bucket_id = 'player-photos');
+```
+
+**Note:** If you get an error saying the policy already exists, you can drop and recreate it:
+
+```sql
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Public can view player photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can upload player photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can update player photos" ON storage.objects;
+DROP POLICY IF EXISTS "Public can delete player photos" ON storage.objects;
+
+-- Then create the policies as shown above
+```
+
+### Option B: Using Storage Policies UI
+
+1. Go to **Storage** → **Policies** in Supabase dashboard
+2. Select the `player-photos` bucket
+3. Click **New Policy**
+4. Create policies for:
+   - **SELECT** (Read) - Target: `public`
+   - **INSERT** (Upload) - Target: `public`
+   - **UPDATE** (Update) - Target: `public`
+   - **DELETE** (Delete) - Target: `public` (optional)
+
+For each policy, use this definition:
+```sql
+bucket_id = 'player-photos'
+```
 
 Alternatively, you can serve photos from the `public/assets/players/` folder.
 

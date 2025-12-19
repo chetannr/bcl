@@ -15,6 +15,10 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
   const [photoUrl, setPhotoUrl] = useState('');
   const [playerType, setPlayerType] = useState('Regular');
   const [basePrice, setBasePrice] = useState('2000');
+  const [auctionSerialNumber, setAuctionSerialNumber] = useState('');
+  const [isValidPlayer, setIsValidPlayer] = useState('Y');
+  const [jerseyNumber, setJerseyNumber] = useState('');
+  const [jerseyName, setJerseyName] = useState('');
   const [error, setError] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
@@ -116,6 +120,18 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
       return;
     }
 
+    const auctionSerialNumberNum = auctionSerialNumber.trim() ? parseInt(auctionSerialNumber.trim(), 10) : null;
+    if (auctionSerialNumber.trim() && (isNaN(auctionSerialNumberNum!) || auctionSerialNumberNum! < 0)) {
+      setError('Auction Serial Number must be a valid positive number');
+      return;
+    }
+
+    const jerseyNumberNum = jerseyNumber.trim() ? parseInt(jerseyNumber.trim(), 10) : null;
+    if (jerseyNumber.trim() && (isNaN(jerseyNumberNum!) || jerseyNumberNum! < 0)) {
+      setError('Jersey Number must be a valid positive number');
+      return;
+    }
+
     try {
       setIsUploading(true);
       let finalPhotoUrl = photoUrl.trim();
@@ -149,6 +165,10 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
           player_type: playerType,
           base_price: basePriceNum,
           status: 'unsold',
+          auction_serial_number: auctionSerialNumberNum,
+          is_valid_player: isValidPlayer,
+          jersey_number: jerseyNumberNum,
+          jersey_name: jerseyName.trim() || null,
         });
 
       if (insertError) throw insertError;
@@ -165,6 +185,10 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
       setPhotoUrl('');
       setPlayerType('Regular');
       setBasePrice('2000');
+      setAuctionSerialNumber('');
+      setIsValidPlayer('Y');
+      setJerseyNumber('');
+      setJerseyName('');
       setUploadedFile(null);
       setUploadPreview(null);
       if (fileInputRef.current) {
@@ -399,6 +423,79 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
               step="100"
               className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="2000"
+            />
+          </div>
+
+          {/* Auction Serial Number */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-2">
+              Auction Serial Number
+            </label>
+            <input
+              type="number"
+              value={auctionSerialNumber}
+              onChange={(e) => {
+                setAuctionSerialNumber(e.target.value);
+                setError('');
+              }}
+              min="0"
+              step="1"
+              className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter auction serial number"
+            />
+          </div>
+
+          {/* Is Valid Player */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-2">
+              Is Valid Player
+            </label>
+            <select
+              value={isValidPlayer}
+              onChange={(e) => {
+                setIsValidPlayer(e.target.value);
+                setError('');
+              }}
+              className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="Y">Yes</option>
+              <option value="N">No</option>
+            </select>
+          </div>
+
+          {/* Jersey Number */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-2">
+              Jersey Number
+            </label>
+            <input
+              type="number"
+              value={jerseyNumber}
+              onChange={(e) => {
+                setJerseyNumber(e.target.value);
+                setError('');
+              }}
+              min="0"
+              step="1"
+              className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter jersey number"
+            />
+          </div>
+
+          {/* Jersey Name */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-2">
+              Jersey Name
+            </label>
+            <input
+              type="text"
+              value={jerseyName}
+              onChange={(e) => {
+                setJerseyName(e.target.value);
+                setError('');
+              }}
+              className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter jersey name"
             />
           </div>
 
