@@ -131,7 +131,7 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <div className="text-3xl font-bold text-primary-600 font-mono">
+              <div className="text-5xl font-bold text-primary-600 font-mono">
                 {formatCurrency(team.current_balance)}
               </div>
               <div className="text-sm text-neutral-500 mt-1">Balance</div>
@@ -172,19 +172,19 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
                           <img
                             src={player.photo_url}
                             alt={player.name}
-                            className="w-24 h-24 object-cover rounded-lg border-2 border-neutral-200 shrink-0"
+                            className=" h-40 object-cover rounded-lg border-2 border-neutral-200 shrink-0"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = '/assets/player-template.png';
                             }}
                           />
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-xl font-bold text-neutral-900">{player.auction_serial_number}{' : '}{player.name}</h3>
+                            <h3 className="text-4xl font-bold text-neutral-900">{player.auction_serial_number}{' : '}{player.name}</h3>
                             <div className="flex flex-wrap gap-3 mt-2 text-sm text-neutral-600">
                               <span>Age: {player.age}</span>
                               <span>Category: {player.category}</span>
                             </div>
                             <div className="mt-3 flex items-center justify-between">
-                              <span className="text-lg font-bold text-primary-600">
+                              <span className="text-5xl font-bold text-primary-600">
                                 {formatCurrency(result.final_amount)}
                               </span>
                               <span className="text-xs text-neutral-500">#{result.auction_order}</span>

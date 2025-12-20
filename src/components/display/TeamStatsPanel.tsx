@@ -43,10 +43,10 @@ export function TeamStatsPanel() {
                 <div className="text-white text-xl font-semibold mb-1 w-full">
                   {team.name}
                 </div>
-                <div className="text-white/90 font-bold font-mono text-xl">
+                <div className="text-white/90 font-bold font-mono text-4xl">
                   {formatCurrency(team.current_balance)}
                 </div>
-                <div className="text-white/75 font-mono text-xl mt-1">
+                <div className="text-white/75 font-mono text-4xl mt-1">
                   {team.players_count} player{team.players_count !== 1 ? 's' : ''}
                 </div>
               </div>
