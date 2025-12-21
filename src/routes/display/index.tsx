@@ -5,6 +5,7 @@ import { TeamStatsPanel } from '../../components/display/TeamStatsPanel';
 import { AuctionStatus } from '../../components/display/AuctionStatus';
 import { CelebrationEffects } from '../../components/display/CelebrationEffects';
 import { useAuctionState, usePlayer } from '../../lib/queries';
+import { getAssetPath } from '../../utils/assets';
 
 export const Route = createFileRoute('/display/')({
   component: DisplayView,
@@ -24,7 +25,7 @@ function DisplayView() {
     <div
       className="h-screen bg-cover bg-center bg-fixed overflow-y-auto"
       style={{
-        backgroundImage: "url('/assets/stadium-bg.jpg')",
+        backgroundImage: `url('${getAssetPath('/assets/stadium-bg.jpg')}')`,
       }}
     >
       {/* Celebration Effects */}
@@ -45,7 +46,7 @@ function DisplayView() {
               <>
                 <div className='col-span-4 flex justify-center items-center'>
                   <img
-                    src="/assets/teams/bcl-bidding.jpg"
+                    src={getAssetPath('/assets/teams/bcl-bidding.jpg')}
                     alt="BCL Bellandur Cricket Logo"
                     className="w-full object-contain drop-shadow-xl  max-w-96"
                   />
