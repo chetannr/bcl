@@ -124,7 +124,7 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={player.photo_url}
+                  src={getAssetPath(player.photo_url)}
                   alt={player.name}
                   className="w-12 h-12 object-cover rounded-lg border border-neutral-200 flex-shrink-0"
                   onError={(e) => {

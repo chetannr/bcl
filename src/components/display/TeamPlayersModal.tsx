@@ -116,7 +116,7 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
         <div className="flex items-center justify-between p-6 border-b border-neutral-200">
           <div className="flex items-center gap-4">
             <img
-              src={team.logo_url}
+              src={getAssetPath(team.logo_url)}
               alt={team.name}
               className="w-16 h-16 object-contain bg-black rounded p-1"
               onError={(e) => {
@@ -171,7 +171,7 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
                       >
                         <div className="flex items-start gap-4">
                           <img
-                            src={player.photo_url}
+                            src={getAssetPath(player.photo_url)}
                             alt={player.name}
                             className=" h-40 object-cover rounded-lg border-2 border-neutral-200 shrink-0"
                             onError={(e) => {

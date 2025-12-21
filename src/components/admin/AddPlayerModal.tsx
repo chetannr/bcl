@@ -378,7 +378,7 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
               <div className="mt-3">
                 <p className="text-xs text-neutral-500 mb-2">Preview:</p>
                 <img
-                  src={uploadPreview || photoUrl}
+                  src={uploadPreview || (photoUrl ? getAssetPath(photoUrl) : '')}
                   alt="Preview"
                   className="w-24 h-24 object-cover rounded-lg border border-neutral-200"
                   onError={(e) => {

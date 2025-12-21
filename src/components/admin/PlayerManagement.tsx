@@ -214,7 +214,7 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
                       title="Click to view large photo"
                     >
                       <img
-                        src={player.photo_url}
+                        src={getAssetPath(player.photo_url)}
                         alt={player.name}
                         className="w-20 h-20 object-cover rounded-lg border-2 border-neutral-200 group-hover:border-primary-400 transition-all cursor-pointer shadow-sm group-hover:shadow-md"
                         onError={(e) => {

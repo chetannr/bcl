@@ -29,7 +29,7 @@ export const TeamBudgetPanel = memo(function TeamBudgetPanel() {
           >
             <div className="flex items-center gap-2 mb-2">
               <img
-                src={team.logo_url}
+                src={getAssetPath(team.logo_url)}
                 alt={team.name}
                 className="w-10 h-10 object-contain"
                 onError={(e) => {

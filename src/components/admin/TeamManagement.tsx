@@ -98,7 +98,7 @@ export function TeamManagement({ onEditTeam, onAddTeam }: TeamManagementProps) {
                 <tr key={team.id} className="hover:bg-neutral-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <img
-                      src={team.logo_url}
+                      src={getAssetPath(team.logo_url)}
                       alt={team.name}
                       className="w-16 h-16 object-contain rounded-lg border border-neutral-200"
                       onError={(e) => {

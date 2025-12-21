@@ -150,7 +150,7 @@ function WelcomeScreen() {
           >
             <div className="flex flex-col items-center text-center">
               <img
-                src={team.logo_url}
+                src={getAssetPath(team.logo_url)}
                 alt={team.name}
                 className="w-32 h-32 object-contain bg-black rounded-lg p-2 mb-2"
                 onError={(e) => {
@@ -237,7 +237,7 @@ function WelcomeScreen() {
           >
             <div className="flex flex-col items-center text-center">
               <img
-                src={team.logo_url}
+                src={getAssetPath(team.logo_url)}
                 alt={team.name}
                 className="w-32 h-32 object-contain bg-black rounded-lg p-2 mb-2"
                 onError={(e) => {
@@ -372,7 +372,7 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
               {playerResult.team?.logo_url && (
                 <div className="flex-shrink-0 animate-scale-in">
                   <img
-                    src={playerResult.team.logo_url}
+                    src={getAssetPath(playerResult.team.logo_url)}
                     alt={playerResult.team.name}
                     className="w-36 h-36 md:w-36 md:h-36 object-contain rounded-xl border-2 border-neutral-900/30 bg-black p-0.5 shadow-lg animate-pulse-glow"
                     onError={(e) => {
@@ -497,7 +497,7 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
           {/* Player Photo */}
           <div className="relative">
             <img
-              src={player.photo_url}
+              src={getAssetPath(player.photo_url)}
               alt={player.name}
               className={`w-full max-h-[388px] max-w-[384px] box-border object-contain border-8 shadow-2xl ${isSold ? 'border-[#39ff14] radium-border-glow' : 'border-white'}`}
               onError={(e) => {

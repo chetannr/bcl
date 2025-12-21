@@ -18,7 +18,7 @@ export function TeamBadge({ team, size = 'md', showDetails = false }: TeamBadgeP
   return (
     <div className="flex items-center gap-3">
       <img
-        src={team.logo_url}
+        src={getAssetPath(team.logo_url)}
         alt={team.name}
         className={`${sizeClasses[size]} object-contain rounded-lg border border-neutral-200 bg-white p-1`}
         onError={(e) => {

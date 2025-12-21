@@ -279,7 +279,7 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
               <div className="mt-3">
                 <p className="text-xs text-neutral-500 mb-2">Preview:</p>
                 <img
-                  src={uploadPreview || logoUrl}
+                  src={uploadPreview || getAssetPath(logoUrl)}
                   alt="Preview"
                   className="w-24 h-24 object-contain rounded-lg border border-neutral-200"
                   onError={(e) => {

@@ -170,7 +170,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
                   `}
                 >
                   <img
-                    src={team.logo_url}
+                    src={getAssetPath(team.logo_url)}
                     alt={team.name}
                     className="w-full max-w-16 max-h-16 h-full object-contain flex-shrink-0 rounded-lg"
                     onError={(e) => {

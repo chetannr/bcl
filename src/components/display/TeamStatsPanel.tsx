@@ -33,7 +33,7 @@ export function TeamStatsPanel() {
               className="bg-white/20 backdrop-blur-sm flex flex-row gap-6 rounded-lg p-3 min-w-[140px] border-2 border-white/30 cursor-pointer hover:bg-white/30 hover:border-white/50 transition-all"
             >
               <img
-                src={team.logo_url}
+                src={getAssetPath(team.logo_url)}
                 alt={team.name}
                 className="w-36 h-36 object-contain bg-black rounded p-1"
                 onError={(e) => {

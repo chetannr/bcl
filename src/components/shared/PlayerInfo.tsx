@@ -12,7 +12,7 @@ export function PlayerInfo({ player, showStatus = false }: PlayerInfoProps) {
     <div className="space-y-2">
       <div className="flex items-center gap-4">
         <img
-          src={player.photo_url}
+          src={getAssetPath(player.photo_url)}
           alt={player.name}
           className="w-32 h-32 object-cover rounded-lg border-2 border-neutral-200"
           onError={(e) => {

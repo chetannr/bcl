@@ -99,7 +99,7 @@ export function TransactionTable({ onEdit, onDelete }: TransactionTableProps) {
                     <div className="flex items-center gap-2">
                       {result.team?.logo_url && (
                         <img
-                          src={result.team.logo_url}
+                          src={getAssetPath(result.team.logo_url)}
                           alt={result.team.name}
                           className="w-6 h-6 object-contain"
                           onError={(e) => {
