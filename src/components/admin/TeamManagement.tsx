@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTeams } from '../../lib/queries';
+import { getAssetPath } from '../../utils/assets';
 import { Edit, Plus, Search } from 'lucide-react';
 import type { Team } from '../../lib/types';
 import { formatCurrency } from '../../utils/currency';
@@ -101,7 +102,7 @@ export function TeamManagement({ onEditTeam, onAddTeam }: TeamManagementProps) {
                       alt={team.name}
                       className="w-16 h-16 object-contain rounded-lg border border-neutral-200"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/assets/team-placeholder.png';
+                        (e.target as HTMLImageElement).src = getAssetPath('/assets/team-placeholder.png');
                       }}
                     />
                   </td>

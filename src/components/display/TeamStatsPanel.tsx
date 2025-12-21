@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTeams } from '../../lib/queries';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 import { TeamPlayersModal } from './TeamPlayersModal';
 import type { Team } from '../../lib/types';
 
@@ -36,7 +37,7 @@ export function TeamStatsPanel() {
                 alt={team.name}
                 className="w-36 h-36 object-contain bg-black rounded p-1"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                  (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
               />
               <div className="flex flex-col items-center text-center">

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { X, Upload, XCircle } from 'lucide-react';
+import { getAssetPath } from '../../utils/assets';
 import type { Database } from '../../lib/database.types';
 
 interface AddPlayerModalProps {
@@ -145,13 +146,13 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
           finalPhotoUrl = uploadedUrl;
         } else {
           // Fallback to default if upload fails
-          finalPhotoUrl = '/assets/player-template.png';
+          finalPhotoUrl = getAssetPath('/assets/player-template.png');
         }
       }
 
       // Use default if no photo URL or file provided
       if (!finalPhotoUrl) {
-        finalPhotoUrl = '/assets/player-template.png';
+        finalPhotoUrl = getAssetPath('/assets/player-template.png');
       }
 
       console.log('[AddPlayerModal] Adding new player');
@@ -367,7 +368,7 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
                   }
                 }}
                 className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="/assets/players/phone.jpg"
+                placeholder={getAssetPath('/assets/players/phone.jpg')}
                 disabled={!!uploadedFile}
               />
             </div>
@@ -381,7 +382,7 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
                   alt="Preview"
                   className="w-24 h-24 object-cover rounded-lg border border-neutral-200"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                    (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                   }}
                 />
               </div>

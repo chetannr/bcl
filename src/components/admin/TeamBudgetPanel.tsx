@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { useTeams } from '../../lib/queries';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 
 export const TeamBudgetPanel = memo(function TeamBudgetPanel() {
   const { data: teams, isLoading } = useTeams();
@@ -32,7 +33,7 @@ export const TeamBudgetPanel = memo(function TeamBudgetPanel() {
                 alt={team.name}
                 className="w-10 h-10 object-contain"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                  (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
               />
               <div className="flex-1 min-w-0">

@@ -1,5 +1,6 @@
 import type { Team } from '../../lib/types';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 
 interface TeamBadgeProps {
   team: Team;
@@ -21,7 +22,7 @@ export function TeamBadge({ team, size = 'md', showDetails = false }: TeamBadgeP
         alt={team.name}
         className={`${sizeClasses[size]} object-contain rounded-lg border border-neutral-200 bg-white p-1`}
         onError={(e) => {
-          (e.target as HTMLImageElement).src = '/assets/player-template.png';
+          (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
         }}
       />
       {showDetails && (

@@ -3,6 +3,7 @@ import { useTeams, useSellPlayer, useMarkPlayerUnsold, useAuctionResults } from 
 import type { Player } from '../../lib/types';
 import { validateBidAmount, validateTeamBalance } from '../../utils/validation';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 import { CheckCircle, XCircle, ArrowRight } from 'lucide-react';
 
 interface AuctionControlsProps {
@@ -173,7 +174,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
                     alt={team.name}
                     className="w-full max-w-16 max-h-16 h-full object-contain flex-shrink-0 rounded-lg"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                      (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                     }}
                   />
                   <div className="flex flex-col gap-1 flex-1 min-w-0">

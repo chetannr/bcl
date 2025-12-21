@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { usePlayers } from '../../lib/queries';
+import { getAssetPath } from '../../utils/assets';
 import { Edit, Plus, Search, X } from 'lucide-react';
 import type { Player } from '../../lib/types';
 
@@ -217,7 +218,7 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
                         alt={player.name}
                         className="w-20 h-20 object-cover rounded-lg border-2 border-neutral-200 group-hover:border-primary-400 transition-all cursor-pointer shadow-sm group-hover:shadow-md"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                          (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                         }}
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors" />
@@ -321,7 +322,7 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
                 alt={viewingPlayer.name}
                 className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-lg"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                  (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
               />
             </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { X, Upload, XCircle } from 'lucide-react';
+import { getAssetPath } from '../../utils/assets';
 import type { Team } from '../../lib/types';
 import type { Database } from '../../lib/database.types';
 
@@ -128,13 +129,13 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
           finalLogoUrl = uploadedUrl;
         } else {
           if (!finalLogoUrl) {
-            finalLogoUrl = team.logo_url || '/assets/team-placeholder.png';
+            finalLogoUrl = team.logo_url || getAssetPath('/assets/team-placeholder.png');
           }
         }
       }
 
       if (!finalLogoUrl) {
-        finalLogoUrl = team.logo_url || '/assets/team-placeholder.png';
+        finalLogoUrl = team.logo_url || getAssetPath('/assets/team-placeholder.png');
       }
 
       const updateData = {
@@ -268,7 +269,7 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
                   }
                 }}
                 className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="/assets/teams/team-logo.png"
+                placeholder={getAssetPath('/assets/teams/team-logo.png')}
                 disabled={!!uploadedFile}
               />
             </div>
@@ -282,7 +283,7 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
                   alt="Preview"
                   className="w-24 h-24 object-contain rounded-lg border border-neutral-200"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/team-placeholder.png';
+                    (e.target as HTMLImageElement).src = getAssetPath('/assets/team-placeholder.png');
                   }}
                 />
               </div>

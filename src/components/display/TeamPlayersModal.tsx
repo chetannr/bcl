@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useAuctionResults } from '../../lib/queries';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 import { X, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Team } from '../../lib/types';
 
@@ -119,7 +120,7 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
               alt={team.name}
               className="w-16 h-16 object-contain bg-black rounded p-1"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
               }}
             />
             <div>
@@ -174,7 +175,7 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
                             alt={player.name}
                             className=" h-40 object-cover rounded-lg border-2 border-neutral-200 shrink-0"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                              (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                             }}
                           />
                           <div className="flex-1 min-w-0">
@@ -206,7 +207,7 @@ export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamP
                     >
                       <div className="flex items-start gap-4">
                         <img
-                          src="/assets/player-template.png"
+                          src={getAssetPath('/assets/player-template.png')}
                           alt="Empty slot"
                           className="w-24 h-24 object-contain rounded-lg border-2 border-neutral-200 shrink-0 opacity-50"
                         />

@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import { usePlayer, useAuctionState, useAuctionResults, useTeams } from '../../lib/queries';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 import { Loader2, Mic, CheckCircle } from 'lucide-react';
 
 interface ConfettiParticle {
@@ -153,7 +154,7 @@ function WelcomeScreen() {
                 alt={team.name}
                 className="w-32 h-32 object-contain bg-black rounded-lg p-2 mb-2"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                  (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
               />
               <div className="text-white text-sm font-semibold">
@@ -214,7 +215,7 @@ function WelcomeScreen() {
           }}
         >
           <img
-            src="/assets/welcome.jpeg"
+            src={getAssetPath('/assets/welcome.jpeg')}
             alt="Welcome to BCL 2025 Auction"
             className="w-full max-w-[384px] h-auto object-contain rounded-xl"
             style={{
@@ -240,7 +241,7 @@ function WelcomeScreen() {
                 alt={team.name}
                 className="w-32 h-32 object-contain bg-black rounded-lg p-2 mb-2"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                  (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
               />
               <div className="text-white text-sm font-semibold">
@@ -324,7 +325,7 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
         <Loader2 className="w-16 h-16 col-span-6 animate-spin text-white" />
         <div className='col-span-6 flex justify-center items-center'>
         <img
-            src="/assets/teams/bcl-bidding.jpg"
+            src={getAssetPath('/assets/teams/bcl-bidding.jpg')}
             alt="BCL Bellandur Cricket Logo"
             className="w-full object-contain drop-shadow-xl max-w-96"
           />
@@ -375,7 +376,7 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
                     alt={playerResult.team.name}
                     className="w-36 h-36 md:w-36 md:h-36 object-contain rounded-xl border-2 border-neutral-900/30 bg-black p-0.5 shadow-lg animate-pulse-glow"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                      (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                     }}
                   />
                 </div>
@@ -500,7 +501,7 @@ export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
               alt={player.name}
               className={`w-full max-h-[388px] max-w-[384px] box-border object-contain border-8 shadow-2xl ${isSold ? 'border-[#39ff14] radium-border-glow' : 'border-white'}`}
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
               }}
             />
             {player.player_type === 'ICON' && (

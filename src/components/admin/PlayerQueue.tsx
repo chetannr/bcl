@@ -1,5 +1,6 @@
 import { useState, useMemo, memo } from 'react';
 import { usePlayers, useSetNextPlayer } from '../../lib/queries';
+import { getAssetPath } from '../../utils/assets';
 import type { Player } from '../../lib/types';
 import { Search } from 'lucide-react';
 
@@ -127,7 +128,7 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
                   alt={player.name}
                   className="w-12 h-12 object-cover rounded-lg border border-neutral-200 flex-shrink-0"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                    (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                   }}
                 />
                 <div className="flex-1 min-w-0">

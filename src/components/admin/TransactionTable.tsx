@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuctionResults } from '../../lib/queries';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 import { Edit, Trash2, Search } from 'lucide-react';
 import type { AuctionResult } from '../../lib/types';
 
@@ -102,7 +103,7 @@ export function TransactionTable({ onEdit, onDelete }: TransactionTableProps) {
                           alt={result.team.name}
                           className="w-6 h-6 object-contain"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                            (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                           }}
                         />
                       )}

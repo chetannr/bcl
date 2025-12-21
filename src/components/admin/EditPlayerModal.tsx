@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { X, Upload, XCircle } from 'lucide-react';
+import { getAssetPath } from '../../utils/assets';
 import type { Player } from '../../lib/types';
 import type { Database } from '../../lib/database.types';
 
@@ -237,7 +238,7 @@ export function EditPlayerModal({ player, onClose, onSave }: EditPlayerModalProp
           console.warn('[EditPlayerModal] ⚠️ Upload failed, falling back to existing photo');
           // If upload fails, keep the existing photo URL
           if (!finalPhotoUrl) {
-            finalPhotoUrl = player.photo_url || '/assets/player-template.png';
+            finalPhotoUrl = player.photo_url || getAssetPath('/assets/player-template.png');
             console.log('[EditPlayerModal] Using existing player photo URL:', finalPhotoUrl);
           } else {
             console.log('[EditPlayerModal] Using manually entered photo URL:', finalPhotoUrl);
@@ -255,7 +256,7 @@ export function EditPlayerModal({ player, onClose, onSave }: EditPlayerModalProp
 
       // Use existing photo if no new photo URL or file provided
       if (!finalPhotoUrl) {
-        finalPhotoUrl = player.photo_url || '/assets/player-template.png';
+        finalPhotoUrl = player.photo_url || getAssetPath('/assets/player-template.png');
         console.log('[EditPlayerModal] No new photo, using existing/default:', finalPhotoUrl);
       }
 
@@ -494,7 +495,7 @@ export function EditPlayerModal({ player, onClose, onSave }: EditPlayerModalProp
                   }
                 }}
                 className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="/assets/players/phone.jpg"
+                placeholder={getAssetPath('/assets/players/phone.jpg')}
                 disabled={!!uploadedFile}
               />
             </div>
@@ -508,7 +509,7 @@ export function EditPlayerModal({ player, onClose, onSave }: EditPlayerModalProp
                   alt="Preview"
                   className="w-24 h-24 object-cover rounded-lg border border-neutral-200"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/assets/player-template.png';
+                    (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                   }}
                 />
               </div>

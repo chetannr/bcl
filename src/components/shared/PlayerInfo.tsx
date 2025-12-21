@@ -1,5 +1,6 @@
 import type { Player } from '../../lib/types';
 import { formatCurrency } from '../../utils/currency';
+import { getAssetPath } from '../../utils/assets';
 
 interface PlayerInfoProps {
   player: Player;
@@ -15,7 +16,7 @@ export function PlayerInfo({ player, showStatus = false }: PlayerInfoProps) {
           alt={player.name}
           className="w-32 h-32 object-cover rounded-lg border-2 border-neutral-200"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = '/assets/player-template.png';
+            (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
           }}
         />
         <div className="flex-1">
