@@ -11,7 +11,10 @@ console.log('[Main] Application initializing...');
 console.log('[Main] Route tree loaded:', routeTree);
 
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({ 
+  routeTree,
+  basepath: '/bcl', // Add this line
+});
 console.log('[Main] Router created:', router);
 
 // Register the router instance for type safety
