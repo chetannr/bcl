@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { X, Upload, XCircle } from 'lucide-react';
+import type { Database } from '../../lib/database.types';
 
 interface AddPlayerModalProps {
   onClose: () => void;
@@ -70,7 +71,7 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
       const filePath = `players/${fileName}`;
 
       // Try to upload to Supabase Storage bucket 'player-photos'
-      const { data, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('player-photos')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -164,12 +165,12 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
           photo_url: finalPhotoUrl,
           player_type: playerType,
           base_price: basePriceNum,
-          status: 'unsold',
+          status: 'unsold' as const,
           auction_serial_number: auctionSerialNumberNum,
           is_valid_player: isValidPlayer,
           jersey_number: jerseyNumberNum,
           jersey_name: jerseyName.trim() || null,
-        });
+        } as Database['public']['Tables']['players']['Insert'] as never);
 
       if (insertError) throw insertError;
 
@@ -194,12 +195,13 @@ export function AddPlayerModal({ onClose, onSave }: AddPlayerModalProps) {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[AddPlayerModal] Error adding player:', err);
-      if (err.code === '23505') {
+      const error = err as { code?: string; message?: string };
+      if (error.code === '23505') {
         setError('A player with this phone number already exists');
       } else {
-        setError(err.message || 'Failed to add player');
+        setError(error.message || 'Failed to add player');
       }
     } finally {
       setIsUploading(false);

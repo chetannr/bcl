@@ -81,7 +81,7 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
       const fileName = `${cleanedName}.${fileExt}`;
       const filePath = `teams/${fileName}`;
 
-      const { data, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('team-logos')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -145,7 +145,7 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
 
       const { error: updateError } = await supabase
         .from('teams')
-        .update(updateData)
+        .update(updateData as never)
         .eq('id', team.id);
 
       if (updateError) {

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import type { Team, Player, AuctionResult, AuctionState } from './types';
+import type { Database } from './database.types';
 
 // Teams queries
 export function useTeams() {
@@ -121,7 +122,7 @@ export function useSellPlayer() {
           team_id: teamId,
           final_amount: amount,
           auction_order: auctionOrder,
-        } as any)
+        } as Database['public']['Tables']['auction_results']['Insert'] as never)
         .select()
         .single();
       
@@ -148,7 +149,7 @@ export function useUpdateAuctionState() {
       const { data: currentState, error: fetchError } = await supabase
         .from('auction_state')
         .select('id')
-        .single();
+        .single<{ id: string }>();
       
       if (fetchError) {
         console.error('[Mutation: useUpdateAuctionState] Error fetching auction state:', fetchError);
@@ -161,15 +162,15 @@ export function useUpdateAuctionState() {
       }
       
       console.log('[Mutation: useUpdateAuctionState] Updating auction state with id:', currentState.id);
-      const updateData: any = {
+      const updateData = {
         ...updates,
         last_updated: new Date().toISOString(),
-      };
+      } as Database['public']['Tables']['auction_state']['Update'] & { last_updated?: string };
       console.log('[Mutation: useUpdateAuctionState] Update data:', updateData);
       
-      const { data, error } = await (supabase
-        .from('auction_state') as any)
-        .update(updateData as any)
+      const { data, error } = await supabase
+        .from('auction_state')
+        .update(updateData as never)
         .eq('id', currentState.id)
         .select()
         .single();
@@ -204,7 +205,7 @@ export function useSetNextPlayer() {
       const { data: currentState, error: fetchError } = await supabase
         .from('auction_state')
         .select('id')
-        .single();
+        .single<{ id: string }>();
       
       if (fetchError) {
         console.error('[Mutation: useSetNextPlayer] Error fetching auction state:', fetchError);
@@ -217,16 +218,16 @@ export function useSetNextPlayer() {
       }
       
       console.log('[Mutation: useSetNextPlayer] Updating auction state with id:', currentState.id);
-      const updateData: any = {
+      const updateData = {
         current_player_id: playerId,
         is_bidding_open: playerId ? true : false,
         last_updated: new Date().toISOString(),
-      };
+      } as Database['public']['Tables']['auction_state']['Update'] & { last_updated?: string };
       console.log('[Mutation: useSetNextPlayer] Update data:', updateData);
       
-      const { data, error } = await (supabase
-        .from('auction_state') as any)
-        .update(updateData as any)
+      const { data, error } = await supabase
+        .from('auction_state')
+        .update(updateData as never)
         .eq('id', currentState.id)
         .select()
         .single();
@@ -256,10 +257,13 @@ export function useMarkPlayerUnsold() {
   
   return useMutation({
     mutationFn: async (playerId: string) => {
-      const updateData: any = { status: 'unsold', auction_order: null };
-      const { data, error } = await (supabase
-        .from('players') as any)
-        .update(updateData as any)
+      const updateData = { 
+        status: 'unsold' as const, 
+        auction_order: null 
+      } as Database['public']['Tables']['players']['Update'];
+      const { data, error } = await supabase
+        .from('players')
+        .update(updateData as never)
         .eq('id', playerId)
         .select()
         .single();

@@ -46,7 +46,7 @@ export function CelebrationEffects() {
   const [confetti, setConfetti] = useState<ConfettiParticle[]>([]);
   const [sparkles, setSparkles] = useState<Array<{ id: number; left: number; top: number; delay: number }>>([]);
   const [isCelebrating, setIsCelebrating] = useState(false);
-  const [celebratingPlayerId, setCelebratingPlayerId] = useState<number | null>(null);
+  const [celebratingPlayerId, setCelebratingPlayerId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!player || !results) return;
@@ -56,6 +56,7 @@ export function CelebrationEffects() {
 
     // Start celebration when a new player is sold
     if (isSold && player.id !== celebratingPlayerId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing state with external data (player/auction results)
       setIsCelebrating(true);
       setConfetti(generateConfetti());
       setSparkles(generateSparkles());
@@ -80,7 +81,7 @@ export function CelebrationEffects() {
     const interval = setInterval(() => {
       setConfetti((prev) => {
         // Keep some existing particles and add new ones
-        const existing = prev.filter((p) => {
+        const existing = prev.filter(() => {
           // Keep particles that are still animating (rough estimate)
           return Math.random() > 0.3;
         });

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { X, Upload, XCircle } from 'lucide-react';
+import type { Database } from '../../lib/database.types';
 
 interface AddTeamModalProps {
   onClose: () => void;
@@ -58,7 +59,7 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
       const fileName = `${cleanedName}.${fileExt}`;
       const filePath = `teams/${fileName}`;
 
-      const { data, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('team-logos')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -120,7 +121,7 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
           base_budget: baseBudgetNum,
           current_balance: baseBudgetNum,
           players_count: 0,
-        });
+        } as Database['public']['Tables']['teams']['Insert'] as never);
 
       if (insertError) {
         if (insertError.code === '23505') {
@@ -142,9 +143,10 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[AddTeamModal] Error adding team:', err);
-      setError(err.message || 'Failed to add team');
+      const error = err as { message?: string };
+      setError(error.message || 'Failed to add team');
     } finally {
       setIsUploading(false);
     }
