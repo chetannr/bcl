@@ -15,7 +15,7 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
   const [selectedTeam, setSelectedTeam] = useState<string>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('card');
 
-  // Get all unique teams from schedule
+  // Get all unique teams from schedule, sorted alphabetically by full name
   const allTeams = useMemo(() => {
     const teams = new Set<string>();
     SCHEDULE.forEach((day) => {
@@ -24,7 +24,11 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
         if (match.team2 !== 'TBD') teams.add(match.team2);
       });
     });
-    return Array.from(teams).sort();
+    return Array.from(teams).sort((a, b) => {
+      const teamAName = getTeamInfo(a)?.fullName || a;
+      const teamBName = getTeamInfo(b)?.fullName || b;
+      return teamAName.localeCompare(teamBName);
+    });
   }, []);
 
   // Filter schedule based on selected team

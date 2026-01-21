@@ -22,8 +22,8 @@ const TEAM_MAPPING: Record<string, TeamInfo> = {
     logoPath: '/assets/teams/MR-Titans.jpeg',
   },
   'BSK': {
-    fullName: 'Bellandur Sharks',
-    logoPath: '/assets/teams/BELLANDUR-SHARKS.jpeg',
+    fullName: 'Super Giants Bellandur',
+    logoPath: '/assets/teams/SUPER-GIANTS-BELLANDUR.jpeg',
   },
   'Phonix': {
     fullName: 'Bellandur Phoenix',
