@@ -70,9 +70,9 @@ export const SCHEDULE: DaySchedule[] = [
     timeRange: '7:00 AM – 5:00 PM',
     matchCount: 11,
     matches: [
-      // Celebration Matches - Day 3: Riders, RCB, Titans, Super Kings
-      { slot: 23, time: '7:00 AM', team1: 'Riders', team2: 'RCB', group: 'A' },
-      { slot: 24, time: '7:50 AM', team1: 'Titans', team2: 'Super Kings', group: 'B' },
+      // Celebration Matches - Day 3: Phoenix, Riders, Monsters, Titans
+      { slot: 23, time: '7:00 AM', team1: 'Phoenix', team2: 'Riders', group: 'A' },
+      { slot: 24, time: '7:50 AM', team1: 'Monsters', team2: 'Titans', group: 'B' },
       // Final group stage matches
       { slot: 25, time: '8:40 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A' },
       { slot: 26, time: '9:30 AM', team1: 'OG', team2: 'Sharks', group: 'B' },
