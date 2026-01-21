@@ -81,7 +81,7 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
         {/* Teams */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3 flex-1 justify-end">
-            <span className={`text-sm text-right font-medium ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+            <span className={`text-[14px] text-right font-medium ${isDark ? 'text-white' : 'text-neutral-900'}`}>
               {team1Info?.fullName || match.team1}
             </span>
             {isTBD ? (
@@ -104,7 +104,7 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
               <img
                 src={getAssetPath(team1Info?.logoPath || '/assets/player-template.png')}
                 alt={team1Info?.fullName || match.team1}
-                className="w-8 h-8 object-contain rounded"
+                className="w-12 h-12 object-contain rounded"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
@@ -135,13 +135,13 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
               <img
                 src={getAssetPath(team2Info?.logoPath || '/assets/player-template.png')}
                 alt={team2Info?.fullName || match.team2}
-                className="w-8 h-8 object-contain rounded"
+                className="w-12 h-12 object-contain rounded"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
               />
             )}
-            <span className={`text-sm font-medium text-left ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+            <span className={`text-[14px] font-medium text-left ${isDark ? 'text-white' : 'text-neutral-900'}`}>
               {team2Info?.fullName || match.team2}
             </span>
           </div>
