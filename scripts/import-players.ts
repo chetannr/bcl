@@ -30,7 +30,7 @@ const TEAMS = [
   { name: 'OG Cricketers', logo: 'OG-CRICKETERS.jpeg' },
   { name: 'Royal Challengers Bellandur', logo: 'RCB.jpeg' },
   { name: 'Royal Tiger Bellandur', logo: 'Royal-Tiger-Bellandur.jpeg' },
-  { name: 'Bellandur Super Kings', logo: 'SUPER-GIANTS-BELLANDUR.jpeg' },
+  { name: 'Bellandur Super Kings', logo: 'bellandur-super-kings.jpeg' },
   { name: 'Uppi Super Avengers', logo: 'USA Uppi-Super-Avengers.jpeg' },
   { name: 'YKR Cricketers', logo: 'YKR-CRICKETERS.jpeg' },
 ];

@@ -10,7 +10,7 @@ INSERT INTO teams (name, logo_url, base_budget, current_balance, players_count) 
 ('OG Cricketers', '/assets/teams/OG-CRICKETERS.jpeg', 100000, 100000, 0),
 ('Royal Challengers Bellandur', '/assets/teams/RCB.jpeg', 100000, 100000, 0),
 ('Royal Tiger Bellandur', '/assets/teams/Royal-Tiger-Bellandur.jpeg', 100000, 100000, 0),
-('Bellandur Super Kings', '/assets/teams/SUPER-GIANTS-BELLANDUR.jpeg', 100000, 100000, 0),
+('Bellandur Super Kings', '/assets/teams/bellandur-super-kings.jpeg', 100000, 100000, 0),
 ('Uppi Super Avengers', '/assets/teams/USA Uppi-Super-Avengers.jpeg', 100000, 100000, 0),
 ('YKR Cricketers', '/assets/teams/YKR-CRICKETERS.jpeg', 100000, 100000, 0)
 ON CONFLICT (name) DO NOTHING;

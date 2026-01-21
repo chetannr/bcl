@@ -85,9 +85,9 @@ const STATIC_TEAMS = [
   {
     name: 'Bellandur Super Kings',
     abbreviation: 'Super Kings',
-    logoPath: '/assets/teams/SUPER-GIANTS-BELLANDUR.jpeg',
+    logoPath: '/assets/teams/bellandur-super-kings.jpeg',
     group: 'B',
-    description: 'Giants ready to conquer the league'
+    description: 'Super Kings ready to conquer the league'
   },
 ];
 

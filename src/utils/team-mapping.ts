@@ -23,7 +23,7 @@ const TEAM_MAPPING: Record<string, TeamInfo> = {
   },
   'Super Kings': {
     fullName: 'Bellandur Super Kings',
-    logoPath: '/assets/teams/SUPER-GIANTS-BELLANDUR.jpeg',
+    logoPath: '/assets/teams/bellandur-super-kings.jpeg',
   },
   'Phoenix': {
     fullName: 'Bellandur Phoenix',
