@@ -28,9 +28,9 @@ const TEAMS = [
   { name: 'Bellandur Monsters', logo: 'BM-Bellandur-Monsters.jpeg' },
   { name: 'MR Titans', logo: 'MR-Titans.jpeg' },
   { name: 'OG Cricketers', logo: 'OG-CRICKETERS.jpeg' },
-  { name: 'RCB', logo: 'RCB.jpeg' },
+  { name: 'Royal Challengers Bellandur', logo: 'RCB.jpeg' },
   { name: 'Royal Tiger Bellandur', logo: 'Royal-Tiger-Bellandur.jpeg' },
-  { name: 'Super Giants Bellandur', logo: 'SUPER-GIANTS-BELLANDUR.jpeg' },
+  { name: 'Bellandur Super Kings', logo: 'SUPER-GIANTS-BELLANDUR.jpeg' },
   { name: 'Uppi Super Avengers', logo: 'USA Uppi-Super-Avengers.jpeg' },
   { name: 'YKR Cricketers', logo: 'YKR-CRICKETERS.jpeg' },
 ];

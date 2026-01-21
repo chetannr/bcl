@@ -13,7 +13,7 @@ const STATIC_TEAMS = [
     description: 'Speed, agility, and determination define the Riders'
   },
   {
-    name: 'RCB',
+    name: 'Royal Challengers Bellandur',
     abbreviation: 'RCB',
     logoPath: '/assets/teams/RCB.jpeg',
     group: 'A',
@@ -21,7 +21,7 @@ const STATIC_TEAMS = [
   },
   {
     name: 'Bellandur Phoenix',
-    abbreviation: 'Phonix',
+    abbreviation: 'Phoenix',
     logoPath: '/assets/teams/BellandurPhoenix.jpeg',
     group: 'A',
     description: 'Rising from the ashes to claim victory'
@@ -42,14 +42,14 @@ const STATIC_TEAMS = [
   },
   {
     name: 'Royal Tiger Bellandur',
-    abbreviation: 'Tigers',
+    abbreviation: 'Royal Tiger',
     logoPath: '/assets/teams/Royal-Tiger-Bellandur.jpeg',
     group: 'A',
     description: 'Fierce competitors with royal pride'
   },
   {
     name: 'MR Titans',
-    abbreviation: 'MR',
+    abbreviation: 'Titans',
     logoPath: '/assets/teams/MR-Titans.jpeg',
     group: 'B',
     description: 'Titans of strength and strategy'
@@ -63,7 +63,7 @@ const STATIC_TEAMS = [
   },
   {
     name: 'Bellandur Monsters',
-    abbreviation: 'Monstig',
+    abbreviation: 'Monsters',
     logoPath: '/assets/teams/BM-Bellandur-Monsters.jpeg',
     group: 'B',
     description: 'Monstrous power and relentless spirit'
@@ -83,8 +83,8 @@ const STATIC_TEAMS = [
     description: 'Elite cricketers with unmatched skill'
   },
   {
-    name: 'Super Giants Bellandur',
-    abbreviation: 'BSK',
+    name: 'Bellandur Super Kings',
+    abbreviation: 'Super Kings',
     logoPath: '/assets/teams/SUPER-GIANTS-BELLANDUR.jpeg',
     group: 'B',
     description: 'Giants ready to conquer the league'

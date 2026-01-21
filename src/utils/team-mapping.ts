@@ -14,18 +14,18 @@ const TEAM_MAPPING: Record<string, TeamInfo> = {
     logoPath: '/assets/teams/BellandurRiders.jpeg',
   },
   'RCB': {
-    fullName: 'RCB',
+    fullName: 'Royal Challengers Bellandur',
     logoPath: '/assets/teams/RCB.jpeg',
   },
-  'MR': {
+  'Titans': {
     fullName: 'MR Titans',
     logoPath: '/assets/teams/MR-Titans.jpeg',
   },
-  'BSK': {
-    fullName: 'Super Giants Bellandur',
+  'Super Kings': {
+    fullName: 'Bellandur Super Kings',
     logoPath: '/assets/teams/SUPER-GIANTS-BELLANDUR.jpeg',
   },
-  'Phonix': {
+  'Phoenix': {
     fullName: 'Bellandur Phoenix',
     logoPath: '/assets/teams/BellandurPhoenix.jpeg',
   },
@@ -33,7 +33,7 @@ const TEAM_MAPPING: Record<string, TeamInfo> = {
     fullName: 'Bellandur Bulldozers',
     logoPath: '/assets/teams/BellandurBulldozers.jpeg',
   },
-  'Monstig': {
+  'Monsters': {
     fullName: 'Bellandur Monsters',
     logoPath: '/assets/teams/BM-Bellandur-Monsters.jpeg',
   },
@@ -45,7 +45,7 @@ const TEAM_MAPPING: Record<string, TeamInfo> = {
     fullName: 'Uppi Super Avengers',
     logoPath: '/assets/teams/USA Uppi-Super-Avengers.jpeg',
   },
-  'Tigers': {
+  'Royal Tiger': {
     fullName: 'Royal Tiger Bellandur',
     logoPath: '/assets/teams/Royal-Tiger-Bellandur.jpeg',
   },

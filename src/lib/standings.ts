@@ -23,18 +23,18 @@ export const STANDINGS: GroupStandings[] = [
     teams: [
       { teamAbbreviation: 'Riders', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
       { teamAbbreviation: 'RCB', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Phonix', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+      { teamAbbreviation: 'Phoenix', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
       { teamAbbreviation: 'Bulldozers', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
       { teamAbbreviation: 'USA', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Tigers', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+      { teamAbbreviation: 'Royal Tiger', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
     ],
   },
   {
     group: 'B',
     teams: [
-      { teamAbbreviation: 'MR', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'BSK', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Monstig', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+      { teamAbbreviation: 'Titans', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+      { teamAbbreviation: 'Super Kings', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+      { teamAbbreviation: 'Monsters', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
       { teamAbbreviation: 'OG', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
       { teamAbbreviation: 'YKR', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
       { teamAbbreviation: 'Sharks', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
@@ -48,16 +48,16 @@ export const STANDINGS: GroupStandings[] = [
 export function getTeamAbbreviation(fullName: string): string {
   const abbreviationMap: Record<string, string> = {
     'Bellandur Riders': 'Riders',
-    'RCB': 'RCB',
-    'MR Titans': 'MR',
-    'Super Giants Bellandur': 'BSK',
+    'Royal Challengers Bellandur': 'RCB',
+    'MR Titans': 'Titans',
+    'Bellandur Super Kings': 'Super Kings',
     'Bellandur Sharks': 'Sharks',
-    'Bellandur Phoenix': 'Phonix',
+    'Bellandur Phoenix': 'Phoenix',
     'Bellandur Bulldozers': 'Bulldozers',
-    'Bellandur Monsters': 'Monstig',
+    'Bellandur Monsters': 'Monsters',
     'OG Cricketers': 'OG',
     'Uppi Super Avengers': 'USA',
-    'Royal Tiger Bellandur': 'Tigers',
+    'Royal Tiger Bellandur': 'Royal Tiger',
     'YKR Cricketers': 'YKR',
   };
   return abbreviationMap[fullName] || fullName;
