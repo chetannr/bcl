@@ -16,6 +16,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
   const [bidAmount, setBidAmount] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const teams = useQuery(api.queries.getTeams);
   const results = useQuery(api.queries.getAuctionResults);
@@ -69,6 +70,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
     const nextOrder = (results?.length || 0) + 1;
 
     try {
+      setIsProcessing(true);
       await sellPlayer({
         playerId: currentPlayer._id,
         teamId: selectedTeamId,
@@ -82,16 +84,21 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
     } catch (err) {
       console.error('[AuctionControls] Error selling player:', err);
       setError(err instanceof Error ? err.message : 'Failed to sell player');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleMarkUnsold = async () => {
     try {
+      setIsProcessing(true);
       await markUnsold({ playerId: currentPlayer._id });
       onNext();
     } catch (err) {
       console.error('[AuctionControls] Error marking unsold:', err);
       setError(err instanceof Error ? err.message : 'Failed to mark unsold');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -227,20 +234,20 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
       <div className="space-y-3 pt-2">
         <button
           onClick={handleSell}
-          disabled={!isValidBid || sellPlayer.isPending}
+          disabled={!isValidBid || isProcessing}
           className="w-full bg-success-500 text-white py-4 px-4 rounded-lg font-medium hover:bg-success-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[52px]"
         >
           <CheckCircle className="w-5 h-5" />
-          {sellPlayer.isPending ? 'Processing...' : 'Mark as SOLD'}
+          {isProcessing ? 'Processing...' : 'Mark as SOLD'}
         </button>
 
         <button
           onClick={handleMarkUnsold}
-          disabled={markUnsold.isPending}
+          disabled={isProcessing}
           className="w-full bg-neutral-200 text-neutral-700 py-4 px-4 rounded-lg font-medium hover:bg-neutral-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[52px]"
         >
           <XCircle className="w-5 h-5" />
-          {markUnsold.isPending ? 'Processing...' : 'Mark as UNSOLD'}
+          {isProcessing ? 'Processing...' : 'Mark as UNSOLD'}
         </button>
 
         <button

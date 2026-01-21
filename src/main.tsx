@@ -19,7 +19,7 @@ console.log('[Main] Convex URL:', import.meta.env.VITE_CONVEX_URL ? 'Configured'
 // Create a new router instance
 const router = createRouter({ 
   routeTree,
-  basepath: '/bcl',
+  basepath: '/',
 });
 console.log('[Main] Router created:', router);
 
@@ -40,7 +40,7 @@ console.log('[Main] Rendering application...');
 createRoot(rootElement).render(
   <StrictMode>
     <ConvexProvider client={convex}>
-      <ConvexAuthProvider>
+      <ConvexAuthProvider client={convex}>
         <RouterProvider router={router} />
       </ConvexAuthProvider>
     </ConvexProvider>

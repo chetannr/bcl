@@ -22,7 +22,7 @@ export const getPlayers = query({
     if (args.status) {
       players = await ctx.db
         .query("players")
-        .withIndex("by_status", (q) => q.eq("status", args.status))
+        .withIndex("by_status", (q) => q.eq("status", args.status!))
         .collect();
     } else {
       players = await ctx.db.query("players").collect();

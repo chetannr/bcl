@@ -1,14 +1,16 @@
 export interface Team {
+  _id: string;
   id: string;
   name: string;
   logo_url: string;
   base_budget: number;
   current_balance: number;
   players_count: number;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface Player {
+  _id: string;
   id: string;
   name: string;
   age: string;
@@ -23,16 +25,17 @@ export interface Player {
   is_valid_player: string;
   jersey_number: number | null;
   jersey_name: string;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface AuctionResult {
+  _id: string;
   id: string;
   player_id: string;
   team_id: string;
   final_amount: number;
   auction_order: number;
-  sold_at: string;
+  sold_at?: string;
   player?: Player;
   team?: Team;
 }

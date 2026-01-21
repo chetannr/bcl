@@ -1,7 +1,6 @@
-import { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useConvexAuth } from "convex/react";
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
 
 interface ProtectedRouteProps {
   children: ReactNode;

@@ -57,7 +57,6 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
   }
 
   const handleSelectPlayer = (player: Player) => {
-    setNextPlayer.mutate(player.id);
     onSelectPlayer(player);
   };
 

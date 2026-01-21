@@ -201,7 +201,7 @@ export const updateTeam = mutation({
       const team = await ctx.db.get(teamId);
       if (team) {
         const spent = team.base_budget - team.current_balance;
-        updates.current_balance = updates.base_budget - spent;
+        (updates as any).current_balance = updates.base_budget - spent;
       }
     }
     
