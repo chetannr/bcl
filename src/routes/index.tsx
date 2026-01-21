@@ -4,6 +4,7 @@ import { Moon, Sun } from 'lucide-react';
 import { MatchSchedule } from '../components/schedule/MatchSchedule';
 import { TeamsTab } from '../components/schedule/TeamsTab';
 import { StandingsTab } from '../components/schedule/StandingsTab';
+import { useSEO, useStructuredData, generateBreadcrumbSchema } from '../lib/seo';
 
 export const Route = createFileRoute('/')({
   component: SchedulePage,
@@ -15,6 +16,24 @@ type Theme = 'dark' | 'light';
 function SchedulePage() {
   const [activeTab, setActiveTab] = useState<Tab>('matches');
   const [theme, setTheme] = useState<Theme>('dark');
+
+  // SEO Configuration
+  useSEO({
+    title: 'Match Schedule & Standings',
+    description: 'View the complete BCL 2025 match schedule, team standings, and tournament information. Track your favorite teams and upcoming matches.',
+    keywords: 'BCL schedule, cricket matches, team standings, tournament schedule, cricket league standings',
+    url: 'https://bclclub.in/',
+    type: 'website',
+  });
+
+  // Structured Data - Breadcrumbs
+  useStructuredData(
+    generateBreadcrumbSchema([
+      { name: 'Home', url: '/' },
+      { name: activeTab === 'matches' ? 'Matches' : activeTab === 'teams' ? 'Teams' : 'Standings', url: '/' },
+    ]),
+    'breadcrumb-schema'
+  );
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'matches', label: 'MATCHES' },
@@ -32,7 +51,7 @@ function SchedulePage() {
     <div className={`min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-50'}`}>
       <div className="max-w-md mx-auto">
         {/* Header */}
-        <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b px-4 py-4`}>
+        <header className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b px-4 py-4`}>
           <div className="flex items-center justify-between mb-2">
             <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
               BCL 2025
@@ -44,23 +63,34 @@ function SchedulePage() {
                   ? 'text-neutral-400 hover:text-white hover:bg-neutral-700'
                   : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
               }`}
-              aria-label="Toggle theme"
+              aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+              aria-pressed={isDark}
+              type="button"
             >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {isDark ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
             </button>
           </div>
           <p className={`text-sm ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
             Bellandur Cricket League
           </p>
-        </div>
+        </header>
 
         {/* Tabs */}
-        <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b`}>
-          <nav className="flex" aria-label="Tabs">
+        <nav 
+          className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b`}
+          role="navigation"
+          aria-label="Main navigation"
+        >
+          <div className="flex" role="tablist">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`${tab.id}-panel`}
+                id={`${tab.id}-tab`}
+                tabIndex={activeTab === tab.id ? 0 : -1}
                 className={`
                   flex-1 py-3 px-4 text-center text-sm font-medium transition-colors relative
                   ${
@@ -76,19 +106,40 @@ function SchedulePage() {
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className={`absolute bottom-0 left-0 right-0 h-0.5 ${isDark ? 'bg-white' : 'bg-neutral-900'}`} />
+                  <span className={`absolute bottom-0 left-0 right-0 h-0.5 ${isDark ? 'bg-white' : 'bg-neutral-900'}`} aria-hidden="true" />
                 )}
               </button>
             ))}
-          </nav>
-        </div>
+          </div>
+        </nav>
 
         {/* Tab Content */}
-        <div className="px-4 py-4">
-          {activeTab === 'matches' && <MatchSchedule theme={theme} />}
-          {activeTab === 'teams' && <TeamsTab theme={theme} />}
-          {activeTab === 'standings' && <StandingsTab theme={theme} />}
-        </div>
+        <main className="px-4 py-4">
+          <div
+            role="tabpanel"
+            id="matches-panel"
+            aria-labelledby="matches-tab"
+            hidden={activeTab !== 'matches'}
+          >
+            {activeTab === 'matches' && <MatchSchedule theme={theme} />}
+          </div>
+          <div
+            role="tabpanel"
+            id="teams-panel"
+            aria-labelledby="teams-tab"
+            hidden={activeTab !== 'teams'}
+          >
+            {activeTab === 'teams' && <TeamsTab theme={theme} />}
+          </div>
+          <div
+            role="tabpanel"
+            id="standings-panel"
+            aria-labelledby="standings-tab"
+            hidden={activeTab !== 'standings'}
+          >
+            {activeTab === 'standings' && <StandingsTab theme={theme} />}
+          </div>
+        </main>
       </div>
     </div>
   );

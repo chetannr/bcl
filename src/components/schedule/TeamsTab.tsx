@@ -95,34 +95,45 @@ export function TeamsTab({ theme }: TeamsTabProps) {
   const isDark = theme === 'dark';
 
   return (
-    <div className="space-y-8">
+    <section className="space-y-8" aria-label="Tournament teams">
       {/* Header */}
-      <div className="text-center space-y-2">
+      <header className="text-center space-y-2">
         <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
           BCL 2025 Teams
         </h2>
         <p className={`text-sm ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
           Competing in two groups for ultimate glory
         </p>
-      </div>
+      </header>
 
       {/* Group A */}
-      <div className="space-y-4">
-        <div className={`inline-flex items-center px-4 py-2 rounded-full ${
-          isDark 
-            ? 'bg-primary-900/30 text-white border border-primary-700/50' 
-            : 'bg-primary-100 text-primary-900 border border-primary-200'
-        }`}>
-          <span className="text-lg font-bold">Group A</span>
-        </div>
+      <article className="space-y-4" aria-labelledby="group-a-heading">
+        <header>
+          <h3 
+            id="group-a-heading"
+            className={`inline-flex items-center px-4 py-2 rounded-full ${
+              isDark 
+                ? 'bg-primary-900/30 text-white border border-primary-700/50' 
+                : 'bg-primary-100 text-primary-900 border border-primary-200'
+            }`}
+          >
+            <span className="text-lg font-bold">Group A</span>
+          </h3>
+        </header>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        <div 
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4"
+          role="list"
+          aria-label="Group A teams"
+        >
           {STATIC_TEAMS.filter(team => team.group === 'A').map((team) => (
-            <div
+            <article
               key={team.abbreviation}
               className={`${
                 isDark ? 'bg-neutral-800 border-neutral-700 hover:border-primary-600' : 'bg-white border-neutral-200 hover:border-primary-400'
               } rounded-xl p-6 border-2 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center space-y-4`}
+              role="listitem"
+              aria-label={`${team.name} team card`}
             >
               {/* Emphasized Logo */}
               <div className={`w-32 h-32 flex items-center justify-center  ${
@@ -132,8 +143,9 @@ export function TeamsTab({ theme }: TeamsTabProps) {
               }`}>
                 <img
                   src={getAssetPath(team.logoPath)}
-                  alt={team.name}
+                  alt={`${team.name} team logo`}
                   className="w-full h-full object-contain"
+                  loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                   }}
@@ -142,35 +154,46 @@ export function TeamsTab({ theme }: TeamsTabProps) {
               
               {/* Team Info */}
               <div className="space-y-2">
-                <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                <h4 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
                   {team.name}
-                </h3>
+                </h4>
                 <p className={`text-xs ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                   {team.description}
                 </p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      </div>
+      </article>
 
       {/* Group B */}
-      <div className="space-y-4">
-        <div className={`inline-flex items-center px-4 py-2 rounded-full ${
-          isDark 
-            ? 'bg-primary-900/30 text-white border border-primary-700/50' 
-            : 'bg-primary-100 text-primary-900 border border-primary-200'
-        }`}>
-          <span className="text-lg font-bold">Group B</span>
-        </div>
+      <article className="space-y-4" aria-labelledby="group-b-heading">
+        <header>
+          <h3 
+            id="group-b-heading"
+            className={`inline-flex items-center px-4 py-2 rounded-full ${
+              isDark 
+                ? 'bg-primary-900/30 text-white border border-primary-700/50' 
+                : 'bg-primary-100 text-primary-900 border border-primary-200'
+            }`}
+          >
+            <span className="text-lg font-bold">Group B</span>
+          </h3>
+        </header>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        <div 
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4"
+          role="list"
+          aria-label="Group B teams"
+        >
           {STATIC_TEAMS.filter(team => team.group === 'B').map((team) => (
-            <div
+            <article
               key={team.abbreviation}
               className={`${
                 isDark ? 'bg-neutral-800 border-neutral-700 hover:border-primary-600' : 'bg-white border-neutral-200 hover:border-primary-400'
               } rounded-xl p-6 border-2 transition-all duration-300 hover:shadow-lg flex flex-col items-center text-center space-y-4`}
+              role="listitem"
+              aria-label={`${team.name} team card`}
             >
               {/* Emphasized Logo */}
               <div className={`w-32 h-32 flex items-center justify-center  ${
@@ -178,8 +201,9 @@ export function TeamsTab({ theme }: TeamsTabProps) {
               } p-4 ring-4 `}>
                 <img
                   src={getAssetPath(team.logoPath)}
-                  alt={team.name}
+                  alt={`${team.name} team logo`}
                   className="w-full h-full object-contain"
+                  loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                   }}
@@ -188,17 +212,17 @@ export function TeamsTab({ theme }: TeamsTabProps) {
               
               {/* Team Info */}
               <div className="space-y-2">
-                <h3 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                <h4 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
                   {team.name}
-                </h3>
+                </h4>
                 <p className={`text-xs ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                   {team.description}
                 </p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      </div>
-    </div>
+      </article>
+    </section>
   );
 }

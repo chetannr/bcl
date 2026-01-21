@@ -10,47 +10,54 @@ export function StandingsTab({ theme }: StandingsTabProps) {
   const isDark = theme === 'dark';
 
   return (
-    <div className="space-y-6">
+    <section className="space-y-6" aria-label="Tournament standings">
       {/* Header */}
-      <div className="mb-4">
+      <header className="mb-4">
         <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
           Group stage
         </h2>
-      </div>
+      </header>
 
       {/* Standings Tables */}
       {STANDINGS.map((groupStandings) => (
-        <div key={groupStandings.group} className="mb-6">
+        <article key={groupStandings.group} className="mb-6" aria-labelledby={`group-${groupStandings.group}-heading`}>
           {/* Group Header */}
-          <div className="mb-3">
-            <h3 className={`text-base font-medium ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+          <header className="mb-3">
+            <h3 
+              id={`group-${groupStandings.group}-heading`}
+              className={`text-base font-medium ${isDark ? 'text-white' : 'text-neutral-900'}`}
+            >
               {groupStandings.group}
             </h3>
-          </div>
+          </header>
 
           {/* Table */}
           <div className={`${isDark ? 'bg-neutral-800' : 'bg-white'} rounded-lg border ${isDark ? 'border-neutral-700' : 'border-neutral-200'} overflow-hidden`}>
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table 
+                className="w-full"
+                role="table"
+                aria-label={`${groupStandings.group} standings table`}
+              >
                 <thead>
                   <tr className={`border-b ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
-                    <th className={`px-4 py-3 text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                    <th scope="col" className={`px-4 py-3 text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                       Team
                     </th>
-                    <th className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
-                      M
+                    <th scope="col" className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                      <abbr title="Matches Played">M</abbr>
                     </th>
-                    <th className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
-                      W
+                    <th scope="col" className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                      <abbr title="Won">W</abbr>
                     </th>
-                    <th className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
-                      L
+                    <th scope="col" className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                      <abbr title="Lost">L</abbr>
                     </th>
-                    <th className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
-                      NRR
+                    <th scope="col" className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                      <abbr title="Net Run Rate">NRR</abbr>
                     </th>
-                    <th className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
-                      Pts
+                    <th scope="col" className={`px-4 py-3 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                      <abbr title="Points">Pts</abbr>
                     </th>
                   </tr>
                 </thead>
@@ -64,12 +71,13 @@ export function StandingsTab({ theme }: StandingsTabProps) {
                         key={standing.teamAbbreviation}
                         className={`${isDark ? 'hover:bg-neutral-700/50' : 'hover:bg-neutral-50'} transition-colors`}
                       >
-                        <td className="px-4 py-3">
+                        <th scope="row" className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <img
                               src={getAssetPath(teamInfo?.logoPath || '/assets/player-template.png')}
-                              alt={teamInfo?.fullName || abbreviation}
-                              className="w-6 h-6 object-contain rounded-full flex-shrink-0"
+                              alt={`${teamInfo?.fullName || abbreviation} team logo`}
+                              className="w-6 h-6 object-contain rounded-full shrink-0"
+                              loading="lazy"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                               }}
@@ -78,7 +86,7 @@ export function StandingsTab({ theme }: StandingsTabProps) {
                               {abbreviation}
                             </span>
                           </div>
-                        </td>
+                        </th>
                         <td className={`px-4 py-3 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
                           {standing.matches}
                         </td>
@@ -101,8 +109,8 @@ export function StandingsTab({ theme }: StandingsTabProps) {
               </table>
             </div>
           </div>
-        </div>
+        </article>
       ))}
-    </div>
+    </section>
   );
 }

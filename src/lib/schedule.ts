@@ -48,7 +48,7 @@ export const SCHEDULE: DaySchedule[] = [
   {
     date: '25 Jan',
     day: 'Sun',
-    timeRange: '7:00 AM – 5:30 PM',
+    timeRange: '7:00 AM – 4:30 PM',
     matchCount: 10,
     matches: [
       // DAY 2 CELEBRATION MATCHES - 4 new unique teams

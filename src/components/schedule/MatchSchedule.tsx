@@ -50,11 +50,14 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
     const team1Info = getTeamInfo(match.team1);
     const team2Info = getTeamInfo(match.team2);
     const isTBD = match.team1 === 'TBD' || match.team2 === 'TBD';
+    const matchLabel = `Match ${match.slot}: ${team1Info?.fullName || match.team1} vs ${team2Info?.fullName || match.team2} at ${match.time}`;
 
     return (
-      <div
+      <article
         key={match.slot}
         className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} rounded-lg p-4 border`}
+        role="listitem"
+        aria-label={matchLabel}
       >
         {/* Match Type / Details */}
         <div className="mb-2 flex justify-between items-center gap-2">
@@ -103,8 +106,9 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
             ) : (
               <img
                 src={getAssetPath(team1Info?.logoPath || '/assets/player-template.png')}
-                alt={team1Info?.fullName || match.team1}
+                alt={`${team1Info?.fullName || match.team1} team logo`}
                 className="w-12 h-12 object-contain rounded"
+                loading="lazy"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
@@ -134,8 +138,9 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
             ) : (
               <img
                 src={getAssetPath(team2Info?.logoPath || '/assets/player-template.png')}
-                alt={team2Info?.fullName || match.team2}
+                alt={`${team2Info?.fullName || match.team2} team logo`}
                 className="w-12 h-12 object-contain rounded"
+                loading="lazy"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                 }}
@@ -149,28 +154,36 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
 
         {/* Time */}
         <div className="mt-2">
-          <span className={`text-sm font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+          <time 
+            className={`text-sm font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}
+            dateTime={match.time}
+          >
             Starts at {match.time.toLowerCase()}
-          </span>
+          </time>
         </div>
-      </div>
+      </article>
     );
   };
 
   return (
-    <div className="space-y-6">
+    <section className="space-y-6" aria-label="Match schedule">
       {/* Filters and View Toggle */}
       <div className="mb-4 space-y-3">
         <div className="flex items-end gap-3">
           {/* Team Filter */}
           <div className="flex-1">
-            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+            <label 
+              htmlFor="team-filter"
+              className={`block text-sm font-medium mb-2 ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}
+            >
               Filter by Team
             </label>
             <div className="relative">
               <select
+                id="team-filter"
                 value={selectedTeam}
                 onChange={(e) => setSelectedTeam(e.target.value)}
+                aria-label="Filter matches by team"
                 className={`
                   w-full appearance-none pl-4 pr-10 py-2.5 rounded-lg border text-sm font-medium
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
@@ -192,7 +205,7 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                   );
                 })}
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none" aria-hidden="true">
                 <ChevronDown
                   className={`w-4 h-4 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}
                 />
@@ -202,12 +215,19 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
 
           {/* View Toggle */}
           <div>
-            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+            <label 
+              id="view-mode-label"
+              className={`block text-sm font-medium mb-2 ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}
+            >
               View
             </label>
-            <div className={`flex rounded-lg border overflow-hidden ${
-              isDark ? 'border-neutral-700' : 'border-neutral-300'
-            }`}>
+            <div 
+              className={`flex rounded-lg border overflow-hidden ${
+                isDark ? 'border-neutral-700' : 'border-neutral-300'
+              }`}
+              role="group"
+              aria-labelledby="view-mode-label"
+            >
               <button
                 onClick={() => setViewMode('card')}
                 className={`
@@ -221,9 +241,11 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                       : 'bg-white text-neutral-600 hover:text-neutral-900'
                   }
                 `}
-                aria-label="Card view"
+                aria-label="Switch to card view"
+                aria-pressed={viewMode === 'card'}
+                type="button"
               >
-                <LayoutGrid className="w-4 h-4" />
+                <LayoutGrid className="w-4 h-4" aria-hidden="true" />
               </button>
               <button
                 onClick={() => setViewMode('table')}
@@ -240,9 +262,11 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                       : 'bg-white text-neutral-600 hover:text-neutral-900'
                   }
                 `}
-                aria-label="Table view"
+                aria-label="Switch to table view"
+                aria-pressed={viewMode === 'table'}
+                type="button"
               >
-                <Table2 className="w-4 h-4" />
+                <Table2 className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -251,44 +275,58 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
 
       {/* Schedule */}
       {filteredSchedule.length === 0 ? (
-        <div className={`text-center py-12 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+        <div 
+          className={`text-center py-12 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}
+          role="status"
+          aria-live="polite"
+        >
           <p>No matches found for the selected team.</p>
         </div>
       ) : (
         filteredSchedule.map((daySchedule) => (
-          <div key={daySchedule.date}>
+          <article key={daySchedule.date} aria-labelledby={`date-${daySchedule.date}`}>
             {/* Date Header */}
-            <div className="mb-3 px-1">
-              <h2 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+            <header className="mb-3 px-1">
+              <h2 
+                id={`date-${daySchedule.date}`}
+                className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}
+              >
                 {daySchedule.day}, {daySchedule.date}
               </h2>
-            </div>
+            </header>
 
             {/* Matches List */}
             {daySchedule.matches.length === 0 ? (
-              <div className={`text-sm ${isDark ? 'text-white' : 'text-neutral-500'}`}>
+              <div 
+                className={`text-sm ${isDark ? 'text-white' : 'text-neutral-500'}`}
+                role="status"
+              >
                 No matches on this day
               </div>
             ) : viewMode === 'card' ? (
-              <div className="space-y-3">
+              <div className="space-y-3" role="list" aria-label={`Matches on ${daySchedule.day}, ${daySchedule.date}`}>
                 {daySchedule.matches.map(renderMatchCard)}
               </div>
             ) : (
               <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} rounded-lg border overflow-hidden`}>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table 
+                    className="w-full"
+                    role="table"
+                    aria-label={`Match schedule table for ${daySchedule.day}, ${daySchedule.date}`}
+                  >
                     <thead>
                       <tr className={`border-b ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
-                        <th className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                        <th scope="col" className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                           Slot
                         </th>
-                        <th className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                        <th scope="col" className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                           Time
                         </th>
-                        <th className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                        <th scope="col" className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                           Match
                         </th>
-                        <th className={`px-1 py-3 align-top text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                        <th scope="col" className={`px-1 py-3 align-top text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                           Group
                         </th> 
                       </tr>
@@ -319,21 +357,23 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                                 {!isTBD && (
                                   <img
                                     src={getAssetPath(team1Info?.logoPath || '/assets/player-template.png')}
-                                    alt={team1Info?.fullName || match.team1}
+                                    alt={`${team1Info?.fullName || match.team1} team logo`}
                                     className="w-10 h-10 object-contain rounded"
+                                    loading="lazy"
                                     onError={(e) => {
                                       (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                                     }}
                                   />
                                 )}
                                 </div>
-                                <span className={`text-xs ${isDark ? 'text-neutral-500' : 'text-neutral-400'}`}>vs</span>
+                                <span className={`text-xs ${isDark ? 'text-neutral-500' : 'text-neutral-400'}`} aria-hidden="true">vs</span>
                                 <div className="flex items-center gap-2 flex-1">
                                 {!isTBD && (
                                   <img
                                     src={getAssetPath(team2Info?.logoPath || '/assets/player-template.png')}
-                                    alt={team2Info?.fullName || match.team2}
+                                    alt={`${team2Info?.fullName || match.team2} team logo`}
                                     className="w-10 h-10 object-contain rounded"
+                                    loading="lazy"
                                     onError={(e) => {
                                       (e.target as HTMLImageElement).src = getAssetPath('/assets/player-template.png');
                                     }}
@@ -364,9 +404,9 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                 </div>
               </div>
             )}
-          </div>
+          </article>
         ))
       )}
-    </div>
+    </section>
   );
 }

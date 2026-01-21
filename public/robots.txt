@@ -1,0 +1,19 @@
+# robots.txt for BCL 2025
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://bclclub.in/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 0
+
+# Disallow admin pages from search engines
+User-agent: *
+Disallow: /admin/
+Disallow: /login
+
+# Allow search engines to crawl public content
+Allow: /
+Allow: /home
+Allow: /display
