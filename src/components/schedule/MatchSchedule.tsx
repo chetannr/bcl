@@ -64,7 +64,7 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
             </span>
           ) : (
             <span className={`text-xs ${isDark ? 'text-white' : 'text-neutral-600'}`}>
-              Group stage · Match {match.slot} of {SCHEDULE.reduce((sum, day) => sum + day.matchCount, 0)}
+              Match {match.slot} of {SCHEDULE.reduce((sum, day) => sum + day.matchCount, 0)}
             </span>
           )}
           {!match.matchType && (

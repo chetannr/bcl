@@ -29,8 +29,8 @@ export const SCHEDULE: DaySchedule[] = [
     matchCount: 12,
     matches: [
       // DAY 1 CELEBRATION MATCHES - 4 unique teams
-      { slot: 1, time: '7:00 AM', team1: 'Phoenix', team2: 'USA', group: 'A', matchType: 'Celebration Match' },
-      { slot: 2, time: '7:50 AM', team1: 'Monsters', team2: 'YKR', group: 'B', matchType: 'Celebration Match' },
+      { slot: 1, time: '7:00 AM', team1: 'Phoenix', team2: 'USA', group: 'A' },
+      { slot: 2, time: '7:50 AM', team1: 'Monsters', team2: 'YKR', group: 'B' },
       
       // Regular group stage matches
       { slot: 3, time: '8:40 AM', team1: 'Riders', team2: 'RCB', group: 'A' },
@@ -52,8 +52,8 @@ export const SCHEDULE: DaySchedule[] = [
     matchCount: 10,
     matches: [
       // DAY 2 CELEBRATION MATCHES - 4 new unique teams
-      { slot: 13, time: '7:00 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A', matchType: 'Celebration Match' },
-      { slot: 14, time: '7:50 AM', team1: 'Titans', team2: 'Sharks', group: 'B', matchType: 'Celebration Match' },
+      { slot: 13, time: '7:00 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A' },
+      { slot: 14, time: '7:50 AM', team1: 'Titans', team2: 'Sharks', group: 'B' },
       
       // Regular group stage matches
       { slot: 15, time: '8:40 AM', team1: 'RCB', team2: 'Phoenix', group: 'A' },
@@ -73,8 +73,8 @@ export const SCHEDULE: DaySchedule[] = [
     matchCount: 11,
     matches: [
       // DAY 3 CELEBRATION MATCHES - 4 new unique teams
-      { slot: 23, time: '7:00 AM', team1: 'Bulldozers', team2: 'Phoenix', group: 'A', matchType: 'Celebration Match' },
-      { slot: 24, time: '7:50 AM', team1: 'OG', team2: 'Super Kings', group: 'B', matchType: 'Celebration Match' },
+      { slot: 23, time: '7:00 AM', team1: 'Bulldozers', team2: 'Phoenix', group: 'A' },
+      { slot: 24, time: '7:50 AM', team1: 'OG', team2: 'Super Kings', group: 'B' },
       
       // Remaining group stage matches
       { slot: 25, time: '8:40 AM', team1: 'USA', team2: 'Royal Tiger', group: 'A' },
@@ -85,9 +85,9 @@ export const SCHEDULE: DaySchedule[] = [
       { slot: 30, time: '12:50 PM', team1: 'Monsters', team2: 'Sharks', group: 'B' },
       
       // Playoff matches
-      { slot: 31, time: '2:00 PM', team1: 'TBD', team2: 'TBD', group: 'A', matchType: 'Semi-Final 1' },
-      { slot: 32, time: '3:30 PM', team1: 'TBD', team2: 'TBD', group: 'B', matchType: 'Semi-Final 2' },
-      { slot: 33, time: '5:00 PM', team1: 'TBD', team2: 'TBD', group: 'A', matchType: 'Final' },
+      { slot: 31, time: '1:40 PM', team1: 'TBD', team2: 'TBD', group: 'A', matchType: 'Semi-Final 1' },
+      { slot: 32, time: '2:30 PM', team1: 'TBD', team2: 'TBD', group: 'B', matchType: 'Semi-Final 2' },
+      { slot: 33, time: '3:20 PM', team1: 'TBD', team2: 'TBD', group: 'A', matchType: 'Final' },
     ],
   },
 ];
