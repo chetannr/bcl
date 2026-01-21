@@ -1,7 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import './index.css';
 
 // Import the generated route tree
@@ -10,10 +11,15 @@ import { routeTree } from './routeTree.gen';
 console.log('[Main] Application initializing...');
 console.log('[Main] Route tree loaded:', routeTree);
 
+// Create Convex client
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+console.log('[Main] Convex client created');
+console.log('[Main] Convex URL:', import.meta.env.VITE_CONVEX_URL ? 'Configured' : 'MISSING');
+
 // Create a new router instance
 const router = createRouter({ 
   routeTree,
-  basepath: '/bcl', // Add this line
+  basepath: '/bcl',
 });
 console.log('[Main] Router created:', router);
 
@@ -24,26 +30,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-// Create a query client with optimized settings
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 30, // 30 seconds - shorter for real-time auction
-      gcTime: 1000 * 60 * 5, // 5 minutes (formerly cacheTime)
-      refetchOnWindowFocus: false,
-      refetchOnMount: true,
-      retry: 1, // Reduce retries for faster failure feedback
-    },
-    mutations: {
-      retry: false, // Don't retry mutations
-    },
-  },
-});
-
-console.log('[Main] QueryClient created');
-console.log('[Main] Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Configured' : 'MISSING');
-console.log('[Main] Supabase Anon Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Configured' : 'MISSING');
-
 const rootElement = document.getElementById('root');
 if (!rootElement) {
   console.error('[Main] ERROR: Root element not found!');
@@ -53,9 +39,11 @@ if (!rootElement) {
 console.log('[Main] Rendering application...');
 createRoot(rootElement).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <ConvexProvider client={convex}>
+      <ConvexAuthProvider>
+        <RouterProvider router={router} />
+      </ConvexAuthProvider>
+    </ConvexProvider>
   </StrictMode>,
 );
 console.log('[Main] Application rendered successfully');

@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../../lib/supabase';
+import { ProtectedRoute } from '../../components/auth/ProtectedRoute';
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { TransactionTable } from '../../components/admin/TransactionTable';
 import { EditTransactionModal } from '../../components/admin/EditTransactionModal';
 import { PlayerManagement } from '../../components/admin/PlayerManagement';
@@ -14,13 +15,18 @@ import { Home, Download } from 'lucide-react';
 import type { AuctionResult, Player, Team } from '../../lib/types';
 
 export const Route = createFileRoute('/admin/manage')({
-  component: AdminManage,
+  component: () => (
+    <ProtectedRoute>
+      <AdminManage />
+    </ProtectedRoute>
+  ),
 });
 
 function AdminManage() {
   console.log('[Route: /admin/manage] Admin manage component rendered');
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const deleteAuctionResult = useMutation(api.mutations.deleteAuctionResult);
+  const updateAuctionResult = useMutation(api.mutations.updateAuctionResult);
   const [editingTransaction, setEditingTransaction] = useState<AuctionResult | null>(null);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [showAddPlayer, setShowAddPlayer] = useState(false);
@@ -32,30 +38,20 @@ function AdminManage() {
   console.log('[Route: /admin/manage] Editing team:', editingTeam);
 
   const handleEdit = (transaction: AuctionResult) => {
-    console.log('[Route: /admin/manage] handleEdit called for transaction:', transaction.id);
+    console.log('[Route: /admin/manage] handleEdit called for transaction:', transaction._id);
     setEditingTransaction(transaction);
   };
 
   const handleDelete = async (transaction: AuctionResult) => {
-    console.log('[Route: /admin/manage] handleDelete called for transaction:', transaction.id);
+    console.log('[Route: /admin/manage] handleDelete called for transaction:', transaction._id);
     if (!confirm(`Are you sure you want to delete the transaction for ${transaction.player?.name}? This will refund the team and mark the player as unsold.`)) {
       console.log('[Route: /admin/manage] Delete cancelled by user');
       return;
     }
 
     try {
-      console.log('[Route: /admin/manage] Deleting transaction from database:', transaction.id);
-      const { error } = await supabase
-        .from('auction_results')
-        .delete()
-        .eq('id', transaction.id);
-
-      if (error) throw error;
-
-      console.log('[Route: /admin/manage] Transaction deleted, invalidating queries');
-      queryClient.invalidateQueries({ queryKey: ['auction-results'] });
-      queryClient.invalidateQueries({ queryKey: ['teams'] });
-      queryClient.invalidateQueries({ queryKey: ['players'] });
+      console.log('[Route: /admin/manage] Deleting transaction from database:', transaction._id);
+      await deleteAuctionResult({ resultId: transaction._id });
       console.log('[Route: /admin/manage] Delete successful');
     } catch (error) {
       console.error('[Route: /admin/manage] Error deleting transaction:', error);
@@ -70,49 +66,11 @@ function AdminManage() {
   ) => {
     console.log('[Route: /admin/manage] handleSaveEdit called:', { transactionId, teamId, amount });
     try {
-      // Get current transaction
-      console.log('[Route: /admin/manage] Fetching current transaction:', transactionId);
-      const { data: currentTransaction, error: fetchError } = await supabase
-        .from('auction_results')
-        .select('*')
-        .eq('id', transactionId)
-        .single();
-
-      if (fetchError) throw fetchError;
-      if (!currentTransaction) throw new Error('Transaction not found');
-      console.log('[Route: /admin/manage] Current transaction fetched:', currentTransaction);
-
-      const transactionData = currentTransaction as any;
-
-      // Delete old transaction (triggers refund)
-      console.log('[Route: /admin/manage] Deleting old transaction:', transactionId);
-      const { error: deleteError } = await supabase
-        .from('auction_results')
-        .delete()
-        .eq('id', transactionId);
-
-      if (deleteError) throw deleteError;
-      console.log('[Route: /admin/manage] Old transaction deleted');
-
-      // Create new transaction with updated values
-      const insertData: any = {
-        player_id: transactionData.player_id,
-        team_id: teamId,
-        final_amount: amount,
-        auction_order: transactionData.auction_order,
-      };
-      console.log('[Route: /admin/manage] Inserting new transaction:', insertData);
-      const { error: insertError } = await supabase
-        .from('auction_results')
-        .insert(insertData);
-
-      if (insertError) throw insertError;
-      console.log('[Route: /admin/manage] New transaction inserted');
-
-      console.log('[Route: /admin/manage] Invalidating queries after update');
-      queryClient.invalidateQueries({ queryKey: ['auction-results'] });
-      queryClient.invalidateQueries({ queryKey: ['teams'] });
-      queryClient.invalidateQueries({ queryKey: ['players'] });
+      await updateAuctionResult({
+        resultId: transactionId,
+        newTeamId: teamId,
+        newAmount: amount,
+      });
       
       setEditingTransaction(null);
       console.log('[Route: /admin/manage] Update successful');
@@ -122,43 +80,25 @@ function AdminManage() {
     }
   };
 
+  const auctionResults = useQuery(api.queries.getAuctionResults);
+
   const handleExportCSV = async () => {
     console.log('[Route: /admin/manage] handleExportCSV called');
-    const results = queryClient.ensureQueryData({
-      queryKey: ['auction-results'],
-      queryFn: async () => {
-        console.log('[Route: /admin/manage] Fetching auction results for CSV export');
-        const { data, error } = await supabase
-          .from('auction_results')
-          .select(`
-            *,
-            player:players(*),
-            team:teams(*)
-          `)
-          .order('auction_order', { ascending: true });
-        
-        if (error) throw error;
-        console.log('[Route: /admin/manage] Auction results fetched:', data?.length || 0, 'results');
-        return data as AuctionResult[];
-      },
-    });
-
-    const resultsArray = (results as unknown) as AuctionResult[];
-    if (!resultsArray || resultsArray.length === 0) {
+    
+    if (!auctionResults || auctionResults.length === 0) {
       console.log('[Route: /admin/manage] No results to export');
       return;
     }
 
-    console.log('[Route: /admin/manage] Creating CSV with', resultsArray.length, 'rows');
+    console.log('[Route: /admin/manage] Creating CSV with', auctionResults.length, 'rows');
     // Create CSV content
-    const headers = ['Order', 'Player Name', 'Category', 'Team', 'Amount', 'Sold At'];
-    const rows = resultsArray.map((r: AuctionResult) => [
+    const headers = ['Order', 'Player Name', 'Category', 'Team', 'Amount'];
+    const rows = auctionResults.map((r) => [
       r.auction_order.toString(),
       r.player?.name || '',
       r.player?.category || '',
       r.team?.name || '',
       r.final_amount.toString(),
-      new Date(r.sold_at).toLocaleString(),
     ]);
 
     const csvContent = [
@@ -195,8 +135,8 @@ function AdminManage() {
             </button>
             <button
               onClick={() => {
-                console.log('[Route: /admin/manage] Navigating to /');
-                navigate({ to: '/' });
+                console.log('[Route: /admin/manage] Navigating to /home');
+                navigate({ to: '/home' });
               }}
               className="flex items-center gap-2 px-4 py-2 text-neutral-600 hover:text-neutral-900 transition-colors"
             >
@@ -259,7 +199,7 @@ function AdminManage() {
         ) : activeTab === 'players' ? (
           <PlayerManagement
             onEditPlayer={(player) => {
-              console.log('[Route: /admin/manage] Opening edit player modal for:', player.id);
+              console.log('[Route: /admin/manage] Opening edit player modal for:', player._id);
               setEditingPlayer(player);
             }}
             onAddPlayer={() => {
@@ -270,7 +210,7 @@ function AdminManage() {
         ) : (
           <TeamManagement
             onEditTeam={(team) => {
-              console.log('[Route: /admin/manage] Opening edit team modal for:', team.id);
+              console.log('[Route: /admin/manage] Opening edit team modal for:', team._id);
               setEditingTeam(team);
             }}
             onAddTeam={() => {
@@ -296,9 +236,7 @@ function AdminManage() {
           player={editingPlayer}
           onClose={() => setEditingPlayer(null)}
           onSave={() => {
-            console.log('[Route: /admin/manage] Player updated, invalidating queries');
-            queryClient.invalidateQueries({ queryKey: ['players'] });
-            queryClient.invalidateQueries({ queryKey: ['auction-results'] });
+            console.log('[Route: /admin/manage] Player updated');
           }}
         />
       )}
@@ -308,8 +246,7 @@ function AdminManage() {
         <AddPlayerModal
           onClose={() => setShowAddPlayer(false)}
           onSave={() => {
-            console.log('[Route: /admin/manage] Player added, invalidating queries');
-            queryClient.invalidateQueries({ queryKey: ['players'] });
+            console.log('[Route: /admin/manage] Player added');
           }}
         />
       )}
@@ -320,9 +257,7 @@ function AdminManage() {
           team={editingTeam}
           onClose={() => setEditingTeam(null)}
           onSave={() => {
-            console.log('[Route: /admin/manage] Team updated, invalidating queries');
-            queryClient.invalidateQueries({ queryKey: ['teams'] });
-            queryClient.invalidateQueries({ queryKey: ['auction-results'] });
+            console.log('[Route: /admin/manage] Team updated');
           }}
         />
       )}
@@ -332,8 +267,7 @@ function AdminManage() {
         <AddTeamModal
           onClose={() => setShowAddTeam(false)}
           onSave={() => {
-            console.log('[Route: /admin/manage] Team added, invalidating queries');
-            queryClient.invalidateQueries({ queryKey: ['teams'] });
+            console.log('[Route: /admin/manage] Team added');
           }}
         />
       )}

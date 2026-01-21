@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useTeams, useSellPlayer, useMarkPlayerUnsold, useAuctionResults } from '../../lib/queries';
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import type { Player } from '../../lib/types';
 import { validateBidAmount, validateTeamBalance } from '../../utils/validation';
 import { formatCurrency } from '../../utils/currency';
@@ -16,20 +17,20 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
   const [selectedTeamId, setSelectedTeamId] = useState<string>('');
   const [error, setError] = useState<string>('');
 
-  const { data: teams } = useTeams();
-  const { data: results } = useAuctionResults();
-  const sellPlayer = useSellPlayer();
-  const markUnsold = useMarkPlayerUnsold();
-  const previousPlayerIdRef = useRef<string | undefined>(currentPlayer?.id);
+  const teams = useQuery(api.queries.getTeams);
+  const results = useQuery(api.queries.getAuctionResults);
+  const sellPlayer = useMutation(api.mutations.sellPlayer);
+  const markUnsold = useMutation(api.mutations.markPlayerUnsold);
+  const previousPlayerIdRef = useRef<string | undefined>(currentPlayer?._id);
 
   useEffect(() => {
-    if (previousPlayerIdRef.current !== currentPlayer?.id) {
-      previousPlayerIdRef.current = currentPlayer?.id;
+    if (previousPlayerIdRef.current !== currentPlayer?._id) {
+      previousPlayerIdRef.current = currentPlayer?._id;
       setBidAmount('');
       setSelectedTeamId('');
       setError('');
     }
-  }, [currentPlayer?.id]);
+  }, [currentPlayer?._id]);
 
   if (!currentPlayer) {
     return (
@@ -39,7 +40,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
     );
   }
 
-  const handleSell = () => {
+  const handleSell = async () => {
     setError('');
     
     if (!selectedTeamId) {
@@ -54,7 +55,7 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
       return;
     }
 
-    const selectedTeam = teams?.find((t) => t.id === selectedTeamId);
+    const selectedTeam = teams?.find((t) => t._id === selectedTeamId);
     if (!selectedTeam) {
       setError('Team not found');
       return;
@@ -67,37 +68,34 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
 
     const nextOrder = (results?.length || 0) + 1;
 
-    sellPlayer.mutate(
-      {
-        playerId: currentPlayer.id,
+    try {
+      await sellPlayer({
+        playerId: currentPlayer._id,
         teamId: selectedTeamId,
         amount,
         auctionOrder: nextOrder,
-      },
-      {
-        onSuccess: () => {
-          console.log('[AuctionControls] Player sold successfully, keeping current player displayed');
-          setBidAmount('');
-          setSelectedTeamId('');
-          // Removed onNext() - keep current player displayed so user can manually select next player
-        },
-        onError: (err: Error) => {
-          console.error('[AuctionControls] Error selling player:', err);
-          setError(err.message || 'Failed to sell player');
-        },
-      }
-    );
+      });
+      console.log('[AuctionControls] Player sold successfully, keeping current player displayed');
+      setBidAmount('');
+      setSelectedTeamId('');
+      // Removed onNext() - keep current player displayed so user can manually select next player
+    } catch (err) {
+      console.error('[AuctionControls] Error selling player:', err);
+      setError(err instanceof Error ? err.message : 'Failed to sell player');
+    }
   };
 
-  const handleMarkUnsold = () => {
-    markUnsold.mutate(currentPlayer.id, {
-      onSuccess: () => {
-        onNext();
-      },
-    });
+  const handleMarkUnsold = async () => {
+    try {
+      await markUnsold({ playerId: currentPlayer._id });
+      onNext();
+    } catch (err) {
+      console.error('[AuctionControls] Error marking unsold:', err);
+      setError(err instanceof Error ? err.message : 'Failed to mark unsold');
+    }
   };
 
-  const selectedTeam = teams?.find((t) => t.id === selectedTeamId);
+  const selectedTeam = teams?.find((t) => t._id === selectedTeamId);
   const amount = parseFloat(bidAmount) || 0;
   const isValidBid =
     amount >= currentPlayer.base_price &&
@@ -146,15 +144,15 @@ export function AuctionControls({ currentPlayer, onNext }: AuctionControlsProps)
             </div>
           ) : (
             eligibleTeams.map((team) => {
-              const isSelected = selectedTeamId === team.id;
+              const isSelected = selectedTeamId === team._id;
               const canAfford = amount > 0 ? amount <= team.current_balance : true;
               
               return (
                 <button
-                  key={team.id}
+                  key={team._id}
                   type="button"
                   onClick={() => {
-                    setSelectedTeamId(team.id);
+                    setSelectedTeamId(team._id);
                     setError('');
                   }}
                   disabled={!canAfford}

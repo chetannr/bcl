@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAuctionResults } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { formatCurrency } from '../../utils/currency';
 import { getAssetPath } from '../../utils/assets';
 import { Edit, Trash2, Search } from 'lucide-react';
@@ -12,9 +13,9 @@ interface TransactionTableProps {
 
 export function TransactionTable({ onEdit, onDelete }: TransactionTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: results, isLoading } = useAuctionResults();
+  const results = useQuery(api.queries.getAuctionResults);
 
-  if (isLoading) {
+  if (results === undefined) {
     return (
       <div className="bg-white rounded-lg shadow p-8 text-center text-neutral-500">
         Loading transactions...

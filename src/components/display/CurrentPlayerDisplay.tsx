@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react';
-import { usePlayer, useAuctionState, useAuctionResults, useTeams } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { formatCurrency } from '../../utils/currency';
 import { getAssetPath } from '../../utils/assets';
 import { Loader2, Mic, CheckCircle } from 'lucide-react';
@@ -57,7 +58,7 @@ function generateSparkles(): Sparkle[] {
 function WelcomeScreen() {
   const [confetti, setConfetti] = useState<ConfettiParticle[]>(() => generateConfetti());
   const [sparkles, setSparkles] = useState<Sparkle[]>(() => generateSparkles());
-  const { data: teams } = useTeams();
+  const teams = useQuery(api.queries.getTeams);
 
   // Split teams into left and right groups
   const teamsArray = teams || [];
@@ -315,11 +316,13 @@ function WelcomeScreen() {
 }
 
 export const CurrentPlayerDisplay = memo(function CurrentPlayerDisplay() {
-  const { data: auctionState } = useAuctionState();
-  const { data: player, isLoading } = usePlayer(auctionState?.current_player_id || null);
-  const { data: results } = useAuctionResults();
+  const auctionState = useQuery(api.queries.getAuctionState);
+  const player = useQuery(api.queries.getPlayer, {
+    playerId: auctionState?.current_player_id ?? null,
+  });
+  const results = useQuery(api.queries.getAuctionResults);
 
-  if (isLoading) {
+  if (player === undefined) {
     return (
       <div className="grid grid-cols-12 items-center justify-center h-full">
         <Loader2 className="w-16 h-16 col-span-6 animate-spin text-white" />

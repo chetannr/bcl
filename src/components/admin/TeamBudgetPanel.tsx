@@ -1,10 +1,12 @@
 import { memo } from 'react';
-import { useTeams } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { formatCurrency } from '../../utils/currency';
 import { getAssetPath } from '../../utils/assets';
 
 export const TeamBudgetPanel = memo(function TeamBudgetPanel() {
-  const { data: teams, isLoading } = useTeams();
+  const teams = useQuery(api.queries.getTeams);
+  const isLoading = teams === undefined;
 
   if (isLoading) {
     return (

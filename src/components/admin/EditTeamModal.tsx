@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../../lib/supabase';
-import { X, Upload, XCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { X } from 'lucide-react';
 import { getAssetPath } from '../../utils/assets';
 import type { Team } from '../../lib/types';
-import type { Database } from '../../lib/database.types';
 
 interface EditTeamModalProps {
   team: Team | null;
@@ -16,10 +16,8 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
   const [logoUrl, setLogoUrl] = useState('');
   const [baseBudget, setBaseBudget] = useState('');
   const [error, setError] = useState('');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const updateTeam = useMutation(api.mutations.updateTeam);
 
   useEffect(() => {
     if (team) {
@@ -27,83 +25,12 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
       setLogoUrl(team.logo_url);
       setBaseBudget(team.base_budget.toString());
       setError('');
-      setUploadedFile(null);
-      setUploadPreview(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
     }
   }, [team]);
 
   if (!team) {
     return null;
   }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    if (!file.type.startsWith('image/')) {
-      setError('Please select an image file');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image size must be less than 5MB');
-      return;
-    }
-
-    setUploadedFile(file);
-    setError('');
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUploadPreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    setLogoUrl('');
-  };
-
-  const handleRemoveFile = () => {
-    setUploadedFile(null);
-    setUploadPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const uploadLogoToStorage = async (file: File, teamName: string): Promise<string | null> => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const cleanedName = teamName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-      const fileName = `${cleanedName}.${fileExt}`;
-      const filePath = `teams/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('team-logos')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true,
-        });
-
-      if (uploadError) {
-        console.warn('[EditTeamModal] Storage upload failed:', uploadError);
-        return null;
-      }
-
-      const { data: urlData } = supabase.storage
-        .from('team-logos')
-        .getPublicUrl(filePath);
-
-      return urlData.publicUrl;
-    } catch (err) {
-      console.error('[EditTeamModal] Error uploading logo:', err);
-      return null;
-    }
-  };
 
   const handleSave = async () => {
     setError('');
@@ -120,43 +47,19 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
     }
 
     try {
-      setIsUploading(true);
+      setIsUpdating(true);
       let finalLogoUrl = logoUrl.trim();
-
-      if (uploadedFile) {
-        const uploadedUrl = await uploadLogoToStorage(uploadedFile, name.trim());
-        if (uploadedUrl) {
-          finalLogoUrl = uploadedUrl;
-        } else {
-          if (!finalLogoUrl) {
-            finalLogoUrl = team.logo_url || getAssetPath('/assets/team-placeholder.png');
-          }
-        }
-      }
 
       if (!finalLogoUrl) {
         finalLogoUrl = team.logo_url || getAssetPath('/assets/team-placeholder.png');
       }
 
-      const updateData = {
+      await updateTeam({
+        teamId: team._id,
         name: name.trim(),
         logo_url: finalLogoUrl,
         base_budget: baseBudgetNum,
-      } as Database['public']['Tables']['teams']['Update'];
-
-      const { error: updateError } = await supabase
-        .from('teams')
-        .update(updateData as never)
-        .eq('id', team.id);
-
-      if (updateError) {
-        if (updateError.code === '23505') {
-          setError('A team with this name already exists');
-        } else {
-          throw updateError;
-        }
-        return;
-      }
+      });
 
       onSave();
       onClose();
@@ -165,7 +68,7 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
       console.error('[EditTeamModal] Error updating team:', err);
       setError(errorMessage);
     } finally {
-      setIsUploading(false);
+      setIsUpdating(false);
     }
   };
 
@@ -202,84 +105,28 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
             />
           </div>
 
-          {/* Logo Upload/URL */}
+          {/* Logo URL */}
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-2">
-              Logo
+              Logo URL
             </label>
-            
-            {/* File Upload Section */}
-            <div className="mb-3">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="logo-upload-edit"
-              />
-              <label
-                htmlFor="logo-upload-edit"
-                className="flex items-center justify-center gap-2 w-full px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg cursor-pointer hover:border-primary-400 hover:bg-primary-50 transition-colors"
-              >
-                <Upload className="w-5 h-5 text-neutral-500" />
-                <span className="text-sm text-neutral-600">
-                  {uploadedFile ? uploadedFile.name : 'Click to upload new logo'}
-                </span>
-              </label>
-              {uploadedFile && (
-                <button
-                  type="button"
-                  onClick={handleRemoveFile}
-                  className="mt-2 flex items-center gap-1 text-sm text-danger-600 hover:text-danger-700"
-                >
-                  <XCircle className="w-4 h-4" />
-                  Remove file
-                </button>
-              )}
-            </div>
-
-            {/* Divider */}
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-neutral-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-neutral-500">OR</span>
-              </div>
-            </div>
-
-            {/* URL Input Section */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2">
-                Logo URL
-              </label>
-              <input
-                type="text"
-                value={logoUrl}
-                onChange={(e) => {
-                  setLogoUrl(e.target.value);
-                  setError('');
-                  if (e.target.value.trim()) {
-                    setUploadedFile(null);
-                    setUploadPreview(null);
-                    if (fileInputRef.current) {
-                      fileInputRef.current.value = '';
-                    }
-                  }
-                }}
-                className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder={getAssetPath('/assets/teams/team-logo.png')}
-                disabled={!!uploadedFile}
-              />
-            </div>
+            <input
+              type="text"
+              value={logoUrl}
+              onChange={(e) => {
+                setLogoUrl(e.target.value);
+                setError('');
+              }}
+              className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder={getAssetPath('/assets/teams/team-logo.png')}
+            />
 
             {/* Preview */}
-            {(uploadPreview || logoUrl) && (
+            {logoUrl && (
               <div className="mt-3">
                 <p className="text-xs text-neutral-500 mb-2">Preview:</p>
                 <img
-                  src={uploadPreview || getAssetPath(logoUrl)}
+                  src={getAssetPath(logoUrl)}
                   alt="Preview"
                   className="w-24 h-24 object-contain rounded-lg border border-neutral-200"
                   onError={(e) => {
@@ -349,10 +196,10 @@ export function EditTeamModal({ team, onClose, onSave }: EditTeamModalProps) {
           </button>
           <button
             onClick={handleSave}
-            disabled={!name.trim() || isUploading}
+            disabled={!name.trim() || isUpdating}
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isUploading ? 'Uploading...' : 'Save Changes'}
+            {isUpdating ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>

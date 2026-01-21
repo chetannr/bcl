@@ -4,9 +4,7 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.GITHUB_REPOSITORY 
-    ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/` 
-    : '/bcl/', // Fallback to '/bcl/' if not in GitHub Actions
+  base: '/', // Using custom domain bclclub.in, so use root path
   plugins: [
     react(),
     TanStackRouterVite(),
@@ -24,14 +22,13 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'router-vendor': ['@tanstack/react-router'],
-          'query-vendor': ['@tanstack/react-query'],
-          'supabase-vendor': ['@supabase/supabase-js'],
+          'convex-vendor': ['convex'],
         },
       },
     },
     chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', '@tanstack/react-router', '@tanstack/react-query', '@supabase/supabase-js'],
+    include: ['react', 'react-dom', '@tanstack/react-router', 'convex'],
   },
 })

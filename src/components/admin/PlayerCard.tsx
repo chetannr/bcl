@@ -1,5 +1,6 @@
 import { memo } from 'react';
-import { usePlayer, useAuctionState } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { PlayerInfo } from '../shared/PlayerInfo';
 import { Loader2, X } from 'lucide-react';
 
@@ -8,10 +9,12 @@ interface PlayerCardProps {
 }
 
 export const PlayerCard = memo(function PlayerCard({ onRemove }: PlayerCardProps) {
-  const { data: auctionState } = useAuctionState();
-  const { data: player, isLoading } = usePlayer(auctionState?.current_player_id || null);
+  const auctionState = useQuery(api.queries.getAuctionState);
+  const player = useQuery(api.queries.getPlayer, {
+    playerId: auctionState?.current_player_id ?? null,
+  });
 
-  if (isLoading) {
+  if (player === undefined) {
     return (
       <div className="bg-white rounded-lg shadow p-8 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary-500" />

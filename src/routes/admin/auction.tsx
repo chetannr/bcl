@@ -1,112 +1,97 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useRealtimeAuction } from '../../hooks/useRealtimeAuction';
+import { ProtectedRoute } from '../../components/auth/ProtectedRoute';
 import { TeamBudgetPanel } from '../../components/admin/TeamBudgetPanel';
 import { PlayerQueue } from '../../components/admin/PlayerQueue';
 import { AuctionControls } from '../../components/admin/AuctionControls';
 import { PlayerCard } from '../../components/admin/PlayerCard';
-import { usePlayers, useSetNextPlayer, useAuctionState, usePlayer, useUpdateAuctionState } from '../../lib/queries';
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { Home, Radio, Power } from 'lucide-react';
 import type { Player } from '../../lib/types';
 
 export const Route = createFileRoute('/admin/auction')({
-  component: AdminAuction,
+  component: () => (
+    <ProtectedRoute>
+      <AdminAuction />
+    </ProtectedRoute>
+  ),
 });
 
 function AdminAuction() {
   console.log('[Route: /admin/auction] Admin auction component rendered');
   const navigate = useNavigate();
-  const { data: auctionState } = useAuctionState();
+  const auctionState = useQuery(api.queries.getAuctionState);
   console.log('[Route: /admin/auction] Auction state:', auctionState);
-  const { data: currentPlayer } = usePlayer(auctionState?.current_player_id || null);
+  const currentPlayer = useQuery(api.queries.getPlayer, {
+    playerId: auctionState?.current_player_id ?? null,
+  });
   console.log('[Route: /admin/auction] Current player:', currentPlayer);
-  const { data: unsoldPlayers } = usePlayers('unsold');
+  const unsoldPlayers = useQuery(api.queries.getPlayers, { status: "unsold" });
   console.log('[Route: /admin/auction] Unsold players count:', unsoldPlayers?.length || 0);
-  const setNextPlayer = useSetNextPlayer();
-  const updateAuctionState = useUpdateAuctionState();
-  
-  // Enable real-time updates
-  console.log('[Route: /admin/auction] Enabling real-time updates...');
-  useRealtimeAuction();
+  const setNextPlayer = useMutation(api.mutations.setNextPlayer);
+  const updateAuctionState = useMutation(api.mutations.updateAuctionState);
 
-  const handleNextPlayer = () => {
+  const handleNextPlayer = async () => {
     console.log('[Route: /admin/auction] handleNextPlayer called');
-    // Find next unsold player
-    const currentIndex = currentPlayer
-      ? unsoldPlayers?.findIndex((p) => p.id === currentPlayer.id) ?? -1
-      : -1;
-    console.log('[Route: /admin/auction] Current player index:', currentIndex);
-    
-    const nextPlayer = unsoldPlayers?.find(
-      (p, index) => p.status === 'unsold' && index > currentIndex
-    );
-    console.log('[Route: /admin/auction] Next player found:', nextPlayer);
-    
-    if (nextPlayer) {
-      console.log('[Route: /admin/auction] Setting next player to:', nextPlayer.id);
-      setNextPlayer.mutate(nextPlayer.id, {
-        onError: (error: Error) => {
-          console.error('[Route: /admin/auction] Error setting next player:', error);
-          alert(`Failed to set next player: ${error.message || 'Unknown error'}`);
-        },
-        onSuccess: () => {
-          console.log('[Route: /admin/auction] Successfully set next player');
-        },
-      });
-    } else {
-      console.log('[Route: /admin/auction] No next player, setting to null');
-      setNextPlayer.mutate(null, {
-        onError: (error: Error) => {
-          console.error('[Route: /admin/auction] Error clearing current player:', error);
-          alert(`Failed to clear current player: ${error.message || 'Unknown error'}`);
-        },
-        onSuccess: () => {
-          console.log('[Route: /admin/auction] Successfully cleared current player');
-        },
-      });
+    try {
+      // Find next unsold player
+      const currentIndex = currentPlayer
+        ? unsoldPlayers?.findIndex((p) => p._id === currentPlayer._id) ?? -1
+        : -1;
+      console.log('[Route: /admin/auction] Current player index:', currentIndex);
+      
+      const nextPlayer = unsoldPlayers?.find(
+        (p, index) => p.status === 'unsold' && index > currentIndex
+      );
+      console.log('[Route: /admin/auction] Next player found:', nextPlayer);
+      
+      if (nextPlayer) {
+        console.log('[Route: /admin/auction] Setting next player to:', nextPlayer._id);
+        await setNextPlayer({ playerId: nextPlayer._id });
+        console.log('[Route: /admin/auction] Successfully set next player');
+      } else {
+        console.log('[Route: /admin/auction] No next player, setting to null');
+        await setNextPlayer({ playerId: null });
+        console.log('[Route: /admin/auction] Successfully cleared current player');
+      }
+    } catch (error) {
+      console.error('[Route: /admin/auction] Error:', error);
+      alert(`Failed to set next player: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
-  const handleSelectPlayer = (player: Player) => {
-    console.log('[Route: /admin/auction] handleSelectPlayer called with player:', player.id, player.name);
-    setNextPlayer.mutate(player.id, {
-      onError: (error: Error) => {
-        console.error('[Route: /admin/auction] Error setting next player:', error);
-        alert(`Failed to set next player: ${error.message || 'Unknown error'}`);
-      },
-      onSuccess: () => {
-        console.log('[Route: /admin/auction] Successfully set next player');
-      },
-    });
+  const handleSelectPlayer = async (player: Player) => {
+    console.log('[Route: /admin/auction] handleSelectPlayer called with player:', player._id, player.name);
+    try {
+      await setNextPlayer({ playerId: player._id });
+      console.log('[Route: /admin/auction] Successfully set next player');
+    } catch (error) {
+      console.error('[Route: /admin/auction] Error setting next player:', error);
+      alert(`Failed to set next player: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
-  const handleToggleAuctionState = () => {
+  const handleToggleAuctionState = async () => {
     const newState = !auctionState?.is_auction_active;
     console.log('[Route: /admin/auction] Toggling auction state to:', newState);
-    updateAuctionState.mutate(
-      { is_auction_active: newState },
-      {
-        onError: (error: Error) => {
-          console.error('[Route: /admin/auction] Error updating auction state:', error);
-          alert(`Failed to ${newState ? 'start' : 'stop'} auction: ${error.message || 'Unknown error'}`);
-        },
-        onSuccess: () => {
-          console.log('[Route: /admin/auction] Successfully updated auction state');
-        },
-      }
-    );
+    try {
+      await updateAuctionState({ is_auction_active: newState });
+      console.log('[Route: /admin/auction] Successfully updated auction state');
+    } catch (error) {
+      console.error('[Route: /admin/auction] Error updating auction state:', error);
+      alert(`Failed to ${newState ? 'start' : 'stop'} auction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
-  const handleClearPlayer = () => {
+  const handleClearPlayer = async () => {
     console.log('[Route: /admin/auction] Clearing current player');
-    setNextPlayer.mutate(null, {
-      onError: (error: Error) => {
-        console.error('[Route: /admin/auction] Error clearing current player:', error);
-        alert(`Failed to clear player: ${error.message || 'Unknown error'}`);
-      },
-      onSuccess: () => {
-        console.log('[Route: /admin/auction] Successfully cleared current player');
-      },
-    });
+    try {
+      await setNextPlayer({ playerId: null });
+      console.log('[Route: /admin/auction] Successfully cleared current player');
+    } catch (error) {
+      console.error('[Route: /admin/auction] Error clearing current player:', error);
+      alert(`Failed to clear player: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
   return (
@@ -119,7 +104,6 @@ function AdminAuction() {
             {/* Auction State Toggle */}
             <button
               onClick={handleToggleAuctionState}
-              disabled={updateAuctionState.isPending}
               className={`
                 flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
                 ${auctionState?.is_auction_active
@@ -143,8 +127,8 @@ function AdminAuction() {
             </button>
             <button
               onClick={() => {
-                console.log('[Route: /admin/auction] Navigating to /');
-                navigate({ to: '/' });
+                console.log('[Route: /admin/auction] Navigating to /home');
+                navigate({ to: '/home' });
               }}
               className="flex items-center gap-2 px-4 py-2 text-neutral-600 hover:text-neutral-900 transition-colors"
             >
@@ -167,7 +151,7 @@ function AdminAuction() {
           <div className="lg:col-span-3">
             <PlayerQueue
               onSelectPlayer={handleSelectPlayer}
-              currentPlayerId={currentPlayer?.id}
+              currentPlayerId={currentPlayer?._id}
             />
           </div>
 

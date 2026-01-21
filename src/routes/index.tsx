@@ -1,66 +1,93 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Settings, Monitor, Home } from 'lucide-react';
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { MatchSchedule } from '../components/schedule/MatchSchedule';
+import { TeamsTab } from '../components/schedule/TeamsTab';
+import { StandingsTab } from '../components/schedule/StandingsTab';
 
 export const Route = createFileRoute('/')({
-  component: Index,
+  component: SchedulePage,
 });
 
-function Index() {
-  console.log('[Route: /] Landing page component rendered');
-  const navigate = useNavigate();
+type Tab = 'matches' | 'teams' | 'standings';
+type Theme = 'dark' | 'light';
+
+function SchedulePage() {
+  const [activeTab, setActiveTab] = useState<Tab>('matches');
+  const [theme, setTheme] = useState<Theme>('dark');
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'matches', label: 'MATCHES' },
+    { id: 'teams', label: 'TEAMS' },
+    { id: 'standings', label: 'STANDINGS' },
+  ];
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const isDark = theme === 'dark';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-neutral-50 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full bg-white rounded-xl shadow-xl p-8 md:p-12">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2 text-neutral-900">
-            BCL 2025
-          </h1>
-          <h2 className="text-2xl md:text-3xl font-semibold text-neutral-600 mb-4">
-            Bidding System
-          </h2>
-          <p className="text-neutral-500">
-            Professional cricket auction management
+    <div className={`min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-50'}`}>
+      <div className="max-w-md mx-auto">
+        {/* Header */}
+        <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b px-4 py-4`}>
+          <div className="flex items-center justify-between mb-2">
+            <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+              BCL 2025
+            </h1>
+            <button
+              onClick={toggleTheme}
+              className={`p-2 rounded-lg transition-colors ${
+                isDark
+                  ? 'text-neutral-400 hover:text-white hover:bg-neutral-700'
+                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+              }`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+          </div>
+          <p className={`text-sm ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+            Bellandur Cricket League
           </p>
         </div>
-        
-        <div className="space-y-4">
-          <button
-            onClick={() => {
-              console.log('[Route: /] Navigating to /admin/auction');
-              navigate({ to: '/admin/auction' });
-            }}
-            className="w-full bg-primary-500 text-white py-4 px-6 rounded-lg font-semibold hover:bg-primary-600 transition-colors flex items-center justify-center gap-3 text-lg shadow-md"
-          >
-            <Settings className="w-6 h-6" />
-            Admin Control Panel
-          </button>
-          
-          <button
-            onClick={() => {
-              console.log('[Route: /] Navigating to /display');
-              navigate({ to: '/display' });
-            }}
-            className="w-full bg-success-500 text-white py-4 px-6 rounded-lg font-semibold hover:bg-success-600 transition-colors flex items-center justify-center gap-3 text-lg shadow-md"
-          >
-            <Monitor className="w-6 h-6" />
-            Display View (Full Screen)
-          </button>
-          
-          <button
-            onClick={() => {
-              console.log('[Route: /] Navigating to /admin/manage');
-              navigate({ to: '/admin/manage' });
-            }}
-            className="w-full bg-neutral-200 text-neutral-700 py-4 px-6 rounded-lg font-semibold hover:bg-neutral-300 transition-colors flex items-center justify-center gap-3 text-lg"
-          >
-            <Home className="w-6 h-6" />
-            Post-Auction Management
-          </button>
+
+        {/* Tabs */}
+        <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b`}>
+          <nav className="flex" aria-label="Tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`
+                  flex-1 py-3 px-4 text-center text-sm font-medium transition-colors relative
+                  ${
+                    activeTab === tab.id
+                      ? isDark
+                        ? 'text-white'
+                        : 'text-neutral-900'
+                      : isDark
+                        ? 'text-neutral-400 hover:text-neutral-300'
+                        : 'text-neutral-600 hover:text-neutral-900'
+                  }
+                `}
+              >
+                {tab.label}
+                {activeTab === tab.id && (
+                  <div className={`absolute bottom-0 left-0 right-0 h-0.5 ${isDark ? 'bg-white' : 'bg-neutral-900'}`} />
+                )}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-neutral-200 text-center text-sm text-neutral-500">
-          <p>12 Teams • ₹1,00,000 Budget Each • ₹2,000 Base Price</p>
+        {/* Tab Content */}
+        <div className="px-4 py-4">
+          {activeTab === 'matches' && <MatchSchedule theme={theme} />}
+          {activeTab === 'teams' && <TeamsTab theme={theme} />}
+          {activeTab === 'standings' && <StandingsTab theme={theme} />}
         </div>
       </div>
     </div>

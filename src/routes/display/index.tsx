@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useRealtimeAuction } from '../../hooks/useRealtimeAuction';
 import { CurrentPlayerDisplay } from '../../components/display/CurrentPlayerDisplay';
 import { TeamStatsPanel } from '../../components/display/TeamStatsPanel';
 import { AuctionStatus } from '../../components/display/AuctionStatus';
 import { CelebrationEffects } from '../../components/display/CelebrationEffects';
-import { useAuctionState, usePlayer } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { getAssetPath } from '../../utils/assets';
 
 export const Route = createFileRoute('/display/')({
@@ -13,12 +13,11 @@ export const Route = createFileRoute('/display/')({
 
 function DisplayView() {
   console.log('[Route: /display] Display view component rendered');
-  // Enable real-time updates
-  console.log('[Route: /display] Enabling real-time updates...');
-  useRealtimeAuction();
   
-  const { data: auctionState } = useAuctionState();
-  const { data: currentPlayer } = usePlayer(auctionState?.current_player_id || null);
+  const auctionState = useQuery(api.queries.getAuctionState);
+  const currentPlayer = useQuery(api.queries.getPlayer, {
+    playerId: auctionState?.current_player_id ?? null,
+  });
   const hasPlayer = !!currentPlayer;
 
   return (

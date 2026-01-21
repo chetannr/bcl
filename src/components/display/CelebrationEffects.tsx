@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { usePlayer, useAuctionState, useAuctionResults } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 interface ConfettiParticle {
   id: number;
@@ -40,9 +41,11 @@ function generateSparkles(): Array<{ id: number; left: number; top: number; dela
 }
 
 export function CelebrationEffects() {
-  const { data: auctionState } = useAuctionState();
-  const { data: player } = usePlayer(auctionState?.current_player_id || null);
-  const { data: results } = useAuctionResults();
+  const auctionState = useQuery(api.queries.getAuctionState);
+  const player = useQuery(api.queries.getPlayer, {
+    playerId: auctionState?.current_player_id ?? null,
+  });
+  const results = useQuery(api.queries.getAuctionResults);
   const [confetti, setConfetti] = useState<ConfettiParticle[]>([]);
   const [sparkles, setSparkles] = useState<Array<{ id: number; left: number; top: number; delay: number }>>([]);
   const [isCelebrating, setIsCelebrating] = useState(false);
@@ -51,16 +54,16 @@ export function CelebrationEffects() {
   useEffect(() => {
     if (!player || !results) return;
 
-    const playerResult = results.find((r) => r.player_id === player.id);
+    const playerResult = results.find((r) => r.player_id === player._id);
     const isSold = player.status === 'sold' && playerResult;
 
     // Start celebration when a new player is sold
-    if (isSold && player.id !== celebratingPlayerId) {
+    if (isSold && player._id !== celebratingPlayerId) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing state with external data (player/auction results)
       setIsCelebrating(true);
       setConfetti(generateConfetti());
       setSparkles(generateSparkles());
-      setCelebratingPlayerId(player.id);
+      setCelebratingPlayerId(player._id);
     } 
     // Stop celebration when we move to a different player (next player appears)
     else if (player.id !== celebratingPlayerId && celebratingPlayerId !== null) {

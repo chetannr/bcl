@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { useTeams } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { formatCurrency } from '../../utils/currency';
 import { getAssetPath } from '../../utils/assets';
 import { TeamPlayersModal } from './TeamPlayersModal';
 import type { Team } from '../../lib/types';
 
 export function TeamStatsPanel() {
-  const { data: teams, isLoading } = useTeams();
+  const teams = useQuery(api.queries.getTeams);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
 
-  if (isLoading) {
+  if (teams === undefined) {
     return (
       <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
         <div className="text-white text-center">Loading teams...</div>

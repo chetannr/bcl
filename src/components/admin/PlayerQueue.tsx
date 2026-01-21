@@ -1,5 +1,6 @@
 import { useState, useMemo, memo } from 'react';
-import { usePlayers, useSetNextPlayer } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { getAssetPath } from '../../utils/assets';
 import type { Player } from '../../lib/types';
 import { Search } from 'lucide-react';
@@ -13,8 +14,8 @@ export const PlayerQueue = memo(function PlayerQueue({ onSelectPlayer, currentPl
   const [searchQuery, setSearchQuery] = useState('');
   const [serialNumberSearch, setSerialNumberSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const { data: players, isLoading } = usePlayers('unsold');
-  const setNextPlayer = useSetNextPlayer();
+  const players = useQuery(api.queries.getPlayers, { status: "unsold" });
+  const isLoading = players === undefined;
 
   const categories = useMemo(() => ['all', 'Batsman', 'Bowler', 'All Rounder'], []);
   

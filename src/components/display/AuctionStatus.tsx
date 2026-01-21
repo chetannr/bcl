@@ -1,7 +1,8 @@
-import { useAuctionState } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 export function AuctionStatus() {
-  const { data: auctionState } = useAuctionState();
+  const auctionState = useQuery(api.queries.getAuctionState);
 
   return (
     <div className="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 flex items-center justify-between">

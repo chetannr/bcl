@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useTeams } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { formatCurrency } from '../../utils/currency';
 import { validateBidAmount, validateTeamBalance } from '../../utils/validation';
 import { X } from 'lucide-react';
@@ -20,12 +21,12 @@ export function EditTransactionModal({
   const [teamId, setTeamId] = useState('');
   const [error, setError] = useState('');
 
-  const { data: teams } = useTeams();
+  const teams = useQuery(api.queries.getTeams);
 
   useEffect(() => {
     if (transaction) {
       setAmount(transaction.final_amount.toString());
-      setTeamId(transaction.team_id);
+      setTeamId(transaction.team_id || '');
       setError('');
     }
   }, [transaction]);

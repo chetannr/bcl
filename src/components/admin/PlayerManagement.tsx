@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { usePlayers } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { getAssetPath } from '../../utils/assets';
 import { Edit, Plus, Search, X } from 'lucide-react';
 import type { Player } from '../../lib/types';
@@ -17,7 +18,8 @@ export function PlayerManagement({ onEditPlayer, onAddPlayer }: PlayerManagement
   const [isValidPlayerFilter, setIsValidPlayerFilter] = useState<string>('all');
   const [viewingPlayer, setViewingPlayer] = useState<Player | null>(null);
 
-  const { data: allPlayers, isLoading } = usePlayers();
+  const allPlayers = useQuery(api.queries.getPlayers, {});
+  const isLoading = allPlayers === undefined;
 
   const filteredPlayers = useMemo(() => {
     if (!allPlayers) return [];

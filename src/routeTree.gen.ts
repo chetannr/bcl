@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DisplayIndexRouteImport } from './routes/display/index'
 import { Route as AdminManageRouteImport } from './routes/admin/manage'
 import { Route as AdminAuctionRouteImport } from './routes/admin/auction'
 
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const AdminAuctionRoute = AdminAuctionRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/home': typeof HomeRoute
   '/admin/auction': typeof AdminAuctionRoute
   '/admin/manage': typeof AdminManageRoute
   '/display': typeof DisplayIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/home': typeof HomeRoute
   '/admin/auction': typeof AdminAuctionRoute
   '/admin/manage': typeof AdminManageRoute
   '/display': typeof DisplayIndexRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/home': typeof HomeRoute
   '/admin/auction': typeof AdminAuctionRoute
   '/admin/manage': typeof AdminManageRoute
   '/display/': typeof DisplayIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin/auction' | '/admin/manage' | '/display'
+  fullPaths: '/' | '/home' | '/admin/auction' | '/admin/manage' | '/display'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin/auction' | '/admin/manage' | '/display'
-  id: '__root__' | '/' | '/admin/auction' | '/admin/manage' | '/display/'
+  to: '/' | '/home' | '/admin/auction' | '/admin/manage' | '/display'
+  id:
+    | '__root__'
+    | '/'
+    | '/home'
+    | '/admin/auction'
+    | '/admin/manage'
+    | '/display/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HomeRoute: typeof HomeRoute
   AdminAuctionRoute: typeof AdminAuctionRoute
   AdminManageRoute: typeof AdminManageRoute
   DisplayIndexRoute: typeof DisplayIndexRoute
@@ -71,6 +87,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HomeRoute: HomeRoute,
   AdminAuctionRoute: AdminAuctionRoute,
   AdminManageRoute: AdminManageRoute,
   DisplayIndexRoute: DisplayIndexRoute,

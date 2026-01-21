@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { useTeams } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { getAssetPath } from '../../utils/assets';
 import { Edit, Plus, Search } from 'lucide-react';
 import type { Team } from '../../lib/types';
@@ -13,7 +14,8 @@ interface TeamManagementProps {
 export function TeamManagement({ onEditTeam, onAddTeam }: TeamManagementProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: allTeams, isLoading } = useTeams();
+  const allTeams = useQuery(api.queries.getTeams);
+  const isLoading = allTeams === undefined;
 
   const filteredTeams = useMemo(() => {
     if (!allTeams) return [];

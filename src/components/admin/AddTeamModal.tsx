@@ -1,8 +1,8 @@
-import { useState, useRef } from 'react';
-import { supabase } from '../../lib/supabase';
-import { X, Upload, XCircle } from 'lucide-react';
+import { useState } from 'react';
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { X } from 'lucide-react';
 import { getAssetPath } from '../../utils/assets';
-import type { Database } from '../../lib/database.types';
 
 interface AddTeamModalProps {
   onClose: () => void;
@@ -14,74 +14,8 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
   const [logoUrl, setLogoUrl] = useState('');
   const [baseBudget, setBaseBudget] = useState('100000');
   const [error, setError] = useState('');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      setError('Please select an image file');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Image size must be less than 5MB');
-      return;
-    }
-
-    setUploadedFile(file);
-    setError('');
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUploadPreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    setLogoUrl('');
-  };
-
-  const handleRemoveFile = () => {
-    setUploadedFile(null);
-    setUploadPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const uploadLogoToStorage = async (file: File, teamName: string): Promise<string | null> => {
-    try {
-      const fileExt = file.name.split('.').pop();
-      const cleanedName = teamName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-      const fileName = `${cleanedName}.${fileExt}`;
-      const filePath = `teams/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('team-logos')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true,
-        });
-
-      if (uploadError) {
-        console.warn('[AddTeamModal] Storage upload failed:', uploadError);
-        return null;
-      }
-
-      const { data: urlData } = supabase.storage
-        .from('team-logos')
-        .getPublicUrl(filePath);
-
-      return urlData.publicUrl;
-    } catch (err) {
-      console.error('[AddTeamModal] Error uploading logo:', err);
-      return null;
-    }
-  };
+  const [isSaving, setIsSaving] = useState(false);
+  const addTeam = useMutation(api.mutations.addTeam);
 
   const handleSave = async () => {
     setError('');
@@ -98,58 +32,23 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
     }
 
     try {
-      setIsUploading(true);
-      let finalLogoUrl = logoUrl.trim();
+      setIsSaving(true);
+      const finalLogoUrl = logoUrl.trim() || getAssetPath('/assets/teams/team-placeholder.png');
 
-      if (uploadedFile) {
-        const uploadedUrl = await uploadLogoToStorage(uploadedFile, name.trim());
-        if (uploadedUrl) {
-          finalLogoUrl = uploadedUrl;
-        } else {
-          finalLogoUrl = getAssetPath('/assets/team-placeholder.png');
-        }
-      }
-
-      if (!finalLogoUrl) {
-        finalLogoUrl = getAssetPath('/assets/team-placeholder.png');
-      }
-
-      const { error: insertError } = await supabase
-        .from('teams')
-        .insert({
-          name: name.trim(),
-          logo_url: finalLogoUrl,
-          base_budget: baseBudgetNum,
-          current_balance: baseBudgetNum,
-          players_count: 0,
-        } as Database['public']['Tables']['teams']['Insert'] as never);
-
-      if (insertError) {
-        if (insertError.code === '23505') {
-          setError('A team with this name already exists');
-        } else {
-          throw insertError;
-        }
-        return;
-      }
+      await addTeam({
+        name: name.trim(),
+        logo_url: finalLogoUrl,
+        base_budget: baseBudgetNum,
+      });
 
       onSave();
       onClose();
-      
-      setName('');
-      setLogoUrl('');
-      setBaseBudget('100000');
-      setUploadedFile(null);
-      setUploadPreview(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
     } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add team';
       console.error('[AddTeamModal] Error adding team:', err);
-      const error = err as { message?: string };
-      setError(error.message || 'Failed to add team');
+      setError(errorMessage);
     } finally {
-      setIsUploading(false);
+      setIsSaving(false);
     }
   };
 
@@ -158,7 +57,7 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-neutral-200">
-          <h2 className="text-2xl font-bold text-neutral-900">Add New Team</h2>
+          <h2 className="text-2xl font-bold text-neutral-900">Add Team</h2>
           <button
             onClick={onClose}
             className="text-neutral-400 hover:text-neutral-600 transition-colors"
@@ -186,84 +85,28 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
             />
           </div>
 
-          {/* Logo Upload/URL */}
+          {/* Logo URL */}
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-2">
-              Logo
+              Logo URL
             </label>
-            
-            {/* File Upload Section */}
-            <div className="mb-3">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="logo-upload"
-              />
-              <label
-                htmlFor="logo-upload"
-                className="flex items-center justify-center gap-2 w-full px-4 py-2 border-2 border-dashed border-neutral-300 rounded-lg cursor-pointer hover:border-primary-400 hover:bg-primary-50 transition-colors"
-              >
-                <Upload className="w-5 h-5 text-neutral-500" />
-                <span className="text-sm text-neutral-600">
-                  {uploadedFile ? uploadedFile.name : 'Click to upload logo'}
-                </span>
-              </label>
-              {uploadedFile && (
-                <button
-                  type="button"
-                  onClick={handleRemoveFile}
-                  className="mt-2 flex items-center gap-1 text-sm text-danger-600 hover:text-danger-700"
-                >
-                  <XCircle className="w-4 h-4" />
-                  Remove file
-                </button>
-              )}
-            </div>
-
-            {/* Divider */}
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-neutral-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-neutral-500">OR</span>
-              </div>
-            </div>
-
-            {/* URL Input Section */}
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2">
-                Logo URL
-              </label>
-              <input
-                type="text"
-                value={logoUrl}
-                onChange={(e) => {
-                  setLogoUrl(e.target.value);
-                  setError('');
-                  if (e.target.value.trim()) {
-                    setUploadedFile(null);
-                    setUploadPreview(null);
-                    if (fileInputRef.current) {
-                      fileInputRef.current.value = '';
-                    }
-                  }
-                }}
-                className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder={getAssetPath('/assets/teams/team-logo.png')}
-                disabled={!!uploadedFile}
-              />
-            </div>
+            <input
+              type="text"
+              value={logoUrl}
+              onChange={(e) => {
+                setLogoUrl(e.target.value);
+                setError('');
+              }}
+              className="w-full px-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder={getAssetPath('/assets/teams/team-logo.png')}
+            />
 
             {/* Preview */}
-            {(uploadPreview || logoUrl) && (
+            {logoUrl && (
               <div className="mt-3">
                 <p className="text-xs text-neutral-500 mb-2">Preview:</p>
                 <img
-                  src={uploadPreview || (logoUrl ? getAssetPath(logoUrl) : '')}
+                  src={getAssetPath(logoUrl)}
                   alt="Preview"
                   className="w-24 h-24 object-contain rounded-lg border border-neutral-200"
                   onError={(e) => {
@@ -277,7 +120,7 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
           {/* Base Budget */}
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-2">
-              Base Budget
+              Base Budget *
             </label>
             <input
               type="number"
@@ -311,10 +154,10 @@ export function AddTeamModal({ onClose, onSave }: AddTeamModalProps) {
           </button>
           <button
             onClick={handleSave}
-            disabled={!name.trim() || isUploading}
+            disabled={!name.trim() || isSaving}
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isUploading ? 'Uploading...' : 'Add Team'}
+            {isSaving ? 'Adding...' : 'Add Team'}
           </button>
         </div>
       </div>

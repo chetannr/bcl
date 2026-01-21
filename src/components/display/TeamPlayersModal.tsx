@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { useAuctionResults } from '../../lib/queries';
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { formatCurrency } from '../../utils/currency';
 import { getAssetPath } from '../../utils/assets';
 import { X, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -13,8 +14,9 @@ interface TeamPlayersModalProps {
 }
 
 export function TeamPlayersModal({ team, teams, onClose, onNavigateTeam }: TeamPlayersModalProps) {
-  const { data: auctionResults, isLoading } = useAuctionResults();
+  const auctionResults = useQuery(api.queries.getAuctionResults);
   const modalRef = useRef<HTMLDivElement>(null);
+  const isLoading = auctionResults === undefined;
 
   if (!team) {
     return null;
