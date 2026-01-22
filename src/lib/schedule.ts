@@ -67,12 +67,12 @@ export const SCHEDULE: DaySchedule[] = [
     matchCount: 11,
     matches: [
       { slot: 23, time: '7:00 AM', team1: 'OG', team2: 'Super Kings', group: 'B' },
-      { slot: 29, time: '7:50 AM', team1: 'RCB', team2: 'Bulldozers', group: 'A' },
-      { slot: 24, time: '8:40 AM', team1: 'Titans', team2: 'YKR', group: 'B' },
-      { slot: 27, time: '9:30 AM', team1: 'Royal Tiger', team2: 'Bulldozers', group: 'A' },
-      { slot: 26, time: '10:20 AM', team1: 'OG', team2: 'Sharks', group: 'B' },
-      { slot: 25, time: '11:10 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A' },
-      { slot: 28, time: '12:00 PM', team1: 'Monsters', team2: 'Titans', group: 'B' },
+      { slot: 24, time: '7:50 AM', team1: 'RCB', team2: 'Bulldozers', group: 'A' },
+      { slot: 25, time: '8:40 AM', team1: 'Titans', team2: 'YKR', group: 'B' },
+      { slot: 26, time: '9:30 AM', team1: 'Royal Tiger', team2: 'Bulldozers', group: 'A' },
+      { slot: 27, time: '10:20 AM', team1: 'OG', team2: 'Sharks', group: 'B' },
+      { slot: 28, time: '11:10 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A' },
+      { slot: 29, time: '12:00 PM', team1: 'Monsters', team2: 'Titans', group: 'B' },
       { slot: 30, time: '12:50 PM', team1: 'Riders', team2: 'USA', group: 'A' },
       // Playoff matches
       { slot: 31, time: '2:00 PM', team1: 'TBD', team2: 'TBD', group: 'A', matchType: 'Semi-Final 1' },
