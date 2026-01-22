@@ -1,71 +1,25 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { CurrentPlayerDisplay } from '../../components/display/CurrentPlayerDisplay';
-import { TeamStatsPanel } from '../../components/display/TeamStatsPanel';
-import { AuctionStatus } from '../../components/display/AuctionStatus';
-import { CelebrationEffects } from '../../components/display/CelebrationEffects';
-import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
-import { getAssetPath } from '../../utils/assets';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Home } from 'lucide-react';
 
 export const Route = createFileRoute('/display/')({
-  component: DisplayView,
+  component: DisplayViewPlaceholder,
 });
 
-function DisplayView() {
-  console.log('[Route: /display] Display view component rendered');
+function DisplayViewPlaceholder() {
+  const navigate = useNavigate();
   
-  const auctionState = useQuery(api.queries.getAuctionState);
-  const currentPlayer = useQuery(api.queries.getPlayer, {
-    playerId: auctionState?.current_player_id ?? null,
-  });
-  const hasPlayer = !!currentPlayer;
-
   return (
-    <div
-      className="h-screen bg-cover bg-center bg-fixed overflow-y-auto"
-      style={{
-        backgroundImage: `url('${getAssetPath('/assets/stadium-bg.jpg')}')`,
-      }}
-    >
-      {/* Celebration Effects */}
-      <CelebrationEffects />
-      
-      {/* Overlay for better text readability */}
-      <div className="min-h-full bg-gradient-to-b from-black/60 via-black/40 to-black/60">
-        <div className="flex flex-col">
-          {/* Header */}
-          <div className="p-4 md:p-6">
-            
-            <AuctionStatus />
-          </div>
-
-          {/* Main Player Display */}
-          <div className="grid grid-cols-12 items-center justify-center px-4 py-8 min-h-[60vh]">
-            {hasPlayer ? (
-              <>
-                <div className='col-span-4 flex justify-center items-center'>
-                  <img
-                    src={getAssetPath('/assets/teams/bcl-bidding.jpg')}
-                    alt="BCL Bellandur Cricket Logo"
-                    className="w-full object-contain drop-shadow-xl  max-w-96"
-                  />
-                </div>
-                <div className='col-span-8'>
-                  <CurrentPlayerDisplay />
-                </div>
-              </>
-            ) : (
-              <div className='col-span-12'>
-                <CurrentPlayerDisplay />
-              </div>
-            )}
-          </div>
-
-          {/* Team Stats Panel */}
-          <div className="p-4 md:p-6">
-            <TeamStatsPanel />
-          </div>
-        </div>
+    <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+      <div className="text-center p-8">
+        <h1 className="text-2xl font-bold text-neutral-900 mb-4">Display View</h1>
+        <p className="text-neutral-600 mb-6">This page is temporarily disabled. Dynamic pages will be enabled later.</p>
+        <button
+          onClick={() => navigate({ to: '/home' })}
+          className="flex items-center gap-2 px-4 py-2 mx-auto text-neutral-600 hover:text-neutral-900 transition-colors"
+        >
+          <Home className="w-5 h-5" />
+          Back to Home
+        </button>
       </div>
     </div>
   );
