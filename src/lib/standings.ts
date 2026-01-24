@@ -20,25 +20,25 @@ export interface GroupStandings {
 export const STANDINGS: GroupStandings[] = [
   {
     group: 'A',
-    teams: [
-      { teamAbbreviation: 'Riders', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'RCB', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Phoenix', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Bulldozers', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'USA', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Royal Tiger', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-    ],
+    teams:[
+  { teamAbbreviation: 'Riders', matches: 1, won: 1, lost: 0, nrr: 4.857, points: 2 },
+  { teamAbbreviation: 'RCB', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+  { teamAbbreviation: 'Phoenix', matches: 2, won: 1, lost: 1, nrr: 0.303, points: 2 },
+  { teamAbbreviation: 'Bulldozers', matches: 1, won: 0, lost: 1, nrr: -3.833, points: 0 },
+  { teamAbbreviation: 'USA', matches: 1, won: 1, lost: 0, nrr: 3.819, points: 2 },
+  { teamAbbreviation: 'Royal Tiger', matches: 1, won: 0, lost: 1, nrr: -3.819, points: 0 },
+],
   },
   {
     group: 'B',
     teams: [
-      { teamAbbreviation: 'Titans', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Super Kings', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Monsters', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'OG', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'YKR', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-      { teamAbbreviation: 'Sharks', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
-    ],
+  { teamAbbreviation: 'Titans',      matches: 1, won: 0, lost: 1, nrr: -12.667, points: 0 },
+  { teamAbbreviation: 'Super Kings',matches: 1, won: 1, lost: 0, nrr: 3.667,   points: 2 },
+  { teamAbbreviation: 'Monsters',   matches: 1, won: 0, lost: 1, nrr: -1.787,  points: 0 },
+  { teamAbbreviation: 'OG',         matches: 1, won: 1, lost: 0, nrr: 1.787,   points: 2 },
+  { teamAbbreviation: 'YKR',        matches: 1, won: 0, lost: 1, nrr: -3.667,  points: 0 },
+  { teamAbbreviation: 'Sharks',     matches: 1, won: 1, lost: 0, nrr: 12.667,  points: 2 },
+],
   },
 ];
 
