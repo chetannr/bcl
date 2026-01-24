@@ -38,9 +38,9 @@ export const SCHEDULE: DaySchedule[] = [
       { slot: 7, time: '12:50 PM', team1: 'Super Kings', team2: 'Sharks', group: 'B' },
       { slot: 8, time: '1:40 PM', team1: 'Phoenix', team2: 'USA', group: 'A' },
       { slot: 9, time: '2:30 PM', team1: 'Titans', team2: 'OG', group: 'B' },
-      { slot: 12, time: '3:20 PM', team1: 'Riders', team2: 'Bulldozers', group: 'A' },
+      { slot: 10, time: '3:20 PM', team1: 'Riders', team2: 'Bulldozers', group: 'A' },
       { slot: 11, time: '4:10 PM', team1: 'Monsters', team2: 'YKR', group: 'B' },
-      { slot: 10, time: '5:00 PM', team1: 'Riders', team2: 'RCB', group: 'A' },
+      { slot: 12, time: '5:00 PM', team1: 'Riders', team2: 'RCB', group: 'A' },
 
     ],
   },
