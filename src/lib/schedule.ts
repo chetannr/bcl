@@ -50,14 +50,14 @@ export const SCHEDULE: DaySchedule[] = [
     timeRange: '7:00 AM – 3:30 PM',
     matchCount: 10,
     matches: [
-     { slot: 13, time: '7:00 AM', team1: 'Monsters', team2: 'Sharks', group: 'B' },
-        { slot: 14, time: '7:50 AM', team1: 'RCB', team2: 'Phoenix', group: 'A' },
-   
-     { slot: 15, time: '8:40 AM', team1: 'RCB', team2: 'Royal Tiger', group: 'A' },
-     { slot: 16, time: '9:30 AM', team1: 'Titans', team2: 'Super Kings', group: 'B' },
-     { slot: 17, time: '10:20 AM', team1: 'Royal Tiger', team2: 'Phoenix', group: 'A' },
-     { slot: 18, time: '11:10 AM', team1: 'OG', team2: 'YKR', group: 'B' },
-     { slot: 19, time: '12:00 PM', team1: 'Bulldozers', team2: 'USA', group: 'A' },
+      
+     { slot: 13, time: '7:00 AM', team1: 'RCB', team2: 'Royal Tiger', group: 'A' },
+      { slot: 14, time: '7:50 PM', team1: 'Bulldozers', team2: 'USA', group: 'A' },
+      { slot: 15, time: '8:40 AM', team1: 'RCB', team2: 'Phoenix', group: 'A' },
+     { slot: 16, time: '9:30 AM', team1: 'Monsters', team2: 'Sharks', group: 'B' },
+     { slot: 17, time: '10:20 AM', team1: 'Titans', team2: 'Super Kings', group: 'B' },
+     { slot: 18, time: '11:10 AM', team1: 'Royal Tiger', team2: 'Phoenix', group: 'A' },
+     { slot: 19, time: '12:00 PM', team1: 'OG', team2: 'YKR', group: 'B' },
      { slot: 20, time: '12:50 PM', team1: 'Super Kings', team2: 'Monsters', group: 'B' },
      { slot: 21, time: '1:40 PM', team1: 'YKR', team2: 'Sharks', group: 'B' },
      { slot: 22, time: '2:30 PM', team1: 'RCB', team2: 'USA', group: 'A' },
