@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { MatchSchedule } from '../components/schedule/MatchSchedule';
 import { TeamsTab } from '../components/schedule/TeamsTab';
@@ -17,6 +17,7 @@ type Theme = 'dark' | 'light';
 function SchedulePage() {
   const [activeTab, setActiveTab] = useState<Tab>('matches');
   const [theme, setTheme] = useState<Theme>('dark');
+  const tabListRef = useRef<HTMLDivElement>(null);
 
   // SEO Configuration
   useSEO({
@@ -49,6 +50,20 @@ function SchedulePage() {
 
   const isDark = theme === 'dark';
 
+  // Auto-scroll to active tab when it changes
+  useEffect(() => {
+    if (tabListRef.current) {
+      const activeTabElement = tabListRef.current.querySelector(`#${activeTab}-tab`) as HTMLElement;
+      if (activeTabElement) {
+        activeTabElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    }
+  }, [activeTab]);
+
   return (
     <div className={`min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-50'}`}>
       <div className="max-w-md mx-auto">
@@ -79,11 +94,11 @@ function SchedulePage() {
 
         {/* Tabs */}
         <nav 
-          className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b`}
+          className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b overflow-x-auto scroll-smooth`}
           role="navigation"
           aria-label="Main navigation"
         >
-          <div className="flex" role="tablist">
+          <div className="flex" role="tablist" ref={tabListRef}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -94,7 +109,7 @@ function SchedulePage() {
                 id={`${tab.id}-tab`}
                 tabIndex={activeTab === tab.id ? 0 : -1}
                 className={`
-                  flex-1 py-3 px-4 text-center text-sm font-medium transition-colors relative
+                  flex-shrink-0 py-3 px-4 text-center text-sm font-medium transition-colors relative whitespace-nowrap
                   ${
                     activeTab === tab.id
                       ? isDark

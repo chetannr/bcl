@@ -42,22 +42,22 @@ export function StandingsTab({ theme }: StandingsTabProps) {
               >
                 <thead>
                   <tr className={`border-b ${isDark ? 'border-neutral-800' : 'border-neutral-200'}`}>
-                    <th scope="col" className={`px-3 py-2.5 text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <th scope="col" className={`px-1.5 py-2.5 text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                       Team
                     </th>
-                    <th scope="col" className={`px-3 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <th scope="col" className={`px-1.5 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                       M
                     </th>
-                    <th scope="col" className={`px-3 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <th scope="col" className={`px-1.5 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                       W
                     </th>
-                    <th scope="col" className={`px-3 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <th scope="col" className={`px-1.5 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                       L
                     </th>
-                    <th scope="col" className={`px-3 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <th scope="col" className={`px-1.5 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                       NRR
                     </th>
-                    <th scope="col" className={`px-3 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                    <th scope="col" className={`px-1.5 py-2.5 text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                       Pts
                     </th>
                   </tr>
@@ -73,7 +73,7 @@ export function StandingsTab({ theme }: StandingsTabProps) {
                         key={standing.teamAbbreviation}
                         className={`border-b ${isDark ? 'border-neutral-800' : 'border-neutral-200'}`}
                       >
-                        <th scope="row" className="px-3 py-2.5">
+                        <th scope="row" className="px-1.5 py-2.5">
                           <div className="flex items-center gap-2">
                             <span className={`text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
                               {rank}
@@ -92,19 +92,19 @@ export function StandingsTab({ theme }: StandingsTabProps) {
                             </span>
                           </div>
                         </th>
-                        <td className={`px-3 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                        <td className={`px-1.5 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
                           {standing.matches}
                         </td>
-                        <td className={`px-3 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                        <td className={`px-1.5 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
                           {standing.won}
                         </td>
-                        <td className={`px-3 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                        <td className={`px-1.5 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
                           {standing.lost}
                         </td>
-                        <td className={`px-3 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                        <td className={`px-1.5 py-2.5 text-center text-sm ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
                           {standing.nrr > 0 ? '+' : ''}{standing.nrr.toFixed(3)}
                         </td>
-                        <td className={`px-3 py-2.5 text-center text-sm font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                        <td className={`px-1.5 py-2.5 text-center text-sm font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
                           {standing.points}
                         </td>
                       </tr>
