@@ -231,7 +231,7 @@ export const SCHEDULE: DaySchedule[] = [
           team1Score: '62/3 (6.0 Ov)',
           team2Score: '58/2 (6.0 Ov)',
           winner: 'Monsters',
-          margin: '5 wickets,
+          margin: '5 wickets',
         },
      },
      { slot: 17, time: '10:20 AM', team1: 'Titans', team2: 'Super Kings', group: 'B' },
