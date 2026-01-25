@@ -84,9 +84,16 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
         {/* Teams */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3 flex-1 justify-end">
-            <span className={`text-[14px] text-right font-medium ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-              {team1Info?.fullName || match.team1}
-            </span>
+            <div className="text-right">
+              <span className={`text-[14px] text-right font-medium ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                {team1Info?.fullName || match.team1}
+              </span>
+              {match.result && (
+                <div className={`text-xs mt-0.5 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                  {match.result.team1Score}
+                </div>
+              )}
+            </div>
             {isTBD ? (
               <div className={`w-8 h-8 rounded-full ${isDark ? 'bg-neutral-700' : 'bg-neutral-200'} flex items-center justify-center`}>
                 <svg
@@ -146,21 +153,42 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                 }}
               />
             )}
-            <span className={`text-[14px] font-medium text-left ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-              {team2Info?.fullName || match.team2}
-            </span>
+            <div className="text-left">
+              <span className={`text-[14px] font-medium text-left ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                {team2Info?.fullName || match.team2}
+              </span>
+              {match.result && (
+                <div className={`text-xs mt-0.5 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                  {match.result.team2Score}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Time */}
-        <div className="mt-2">
-          <time 
-            className={`text-sm font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}
-            dateTime={match.time}
-          >
-            Starts at {match.time.toLowerCase()}
-          </time>
-        </div>
+        {/* Result or Time */}
+        {match.result ? (
+          <div className="mt-2 flex justify-between items-center">
+            <div className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-primary-600'}`}>
+              {match.result.winner} won by {match.result.margin}
+            </div>
+            <time 
+              className={`text-xs ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}
+              dateTime={match.time}
+            >
+              Played at {match.time.toLowerCase()}
+            </time>
+          </div>
+        ) : (
+          <div className="mt-2">
+            <time 
+              className={`text-sm font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}
+              dateTime={match.time}
+            >
+              Starts at {match.time.toLowerCase()}
+            </time>
+          </div>
+        )}
       </article>
     );
   };
@@ -326,6 +354,9 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                         <th scope="col" className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                           Match
                         </th>
+                        <th scope="col" className={`px-1 py-3 align-top text-left text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
+                          Result
+                        </th>
                         <th scope="col" className={`px-1 py-3 align-top text-center text-xs font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'} uppercase tracking-wider`}>
                           Group
                         </th> 
@@ -383,6 +414,25 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
                                   {team2Info?.fullName || match.team2}
                                 </span></div>
                               </div>
+                            </td>
+                            <td className="px-1 py-3 align-top">
+                              {match.result ? (
+                                <div className="space-y-0.5">
+                                  <div className={`text-xs ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                                    {match.result.team1Score}
+                                  </div>
+                                  <div className={`text-xs ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>
+                                    {match.result.team2Score}
+                                  </div>
+                                  <div className={`text-xs font-semibold mt-1 ${isDark ? 'text-primary-400' : 'text-primary-600'}`}>
+                                    {match.result.winner} won by {match.result.margin}
+                                  </div>
+                                </div>
+                              ) : (
+                                <span className={`text-xs ${isDark ? 'text-neutral-500' : 'text-neutral-400'}`}>
+                                  —
+                                </span>
+                              )}
                             </td>
                             <td className="px-1 py-3 align-top text-center">
                               {!match.matchType && (

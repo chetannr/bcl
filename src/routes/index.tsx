@@ -4,13 +4,14 @@ import { Moon, Sun } from 'lucide-react';
 import { MatchSchedule } from '../components/schedule/MatchSchedule';
 import { TeamsTab } from '../components/schedule/TeamsTab';
 import { StandingsTab } from '../components/schedule/StandingsTab';
+import { PredictionTab } from '../components/schedule/PredictionTab';
 import { useSEO, useStructuredData, generateBreadcrumbSchema } from '../lib/seo';
 
 export const Route = createFileRoute('/')({
   component: SchedulePage,
 });
 
-type Tab = 'matches' | 'teams' | 'standings';
+type Tab = 'matches' | 'teams' | 'standings' | 'predictions';
 type Theme = 'dark' | 'light';
 
 function SchedulePage() {
@@ -30,7 +31,7 @@ function SchedulePage() {
   useStructuredData(
     generateBreadcrumbSchema([
       { name: 'Home', url: '/' },
-      { name: activeTab === 'matches' ? 'Matches' : activeTab === 'teams' ? 'Teams' : 'Standings', url: '/' },
+      { name: activeTab === 'matches' ? 'Matches' : activeTab === 'teams' ? 'Teams' : activeTab === 'standings' ? 'Standings' : 'Predictions', url: '/' },
     ]),
     'breadcrumb-schema'
   );
@@ -39,6 +40,7 @@ function SchedulePage() {
     { id: 'matches', label: 'MATCHES' },
     { id: 'teams', label: 'TEAMS' },
     { id: 'standings', label: 'STANDINGS' },
+    { id: 'predictions', label: 'PREDICTIONS' },
   ];
 
   const toggleTheme = () => {
@@ -138,6 +140,14 @@ function SchedulePage() {
             hidden={activeTab !== 'standings'}
           >
             {activeTab === 'standings' && <StandingsTab theme={theme} />}
+          </div>
+          <div
+            role="tabpanel"
+            id="predictions-panel"
+            aria-labelledby="predictions-tab"
+            hidden={activeTab !== 'predictions'}
+          >
+            {activeTab === 'predictions' && <PredictionTab theme={theme} />}
           </div>
         </main>
       </div>

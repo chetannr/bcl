@@ -4,6 +4,13 @@
  * Round Robin: 30 group stage matches (15 per group) + 3 playoffs = 33 total
  */
 
+export interface MatchResult {
+  team1Score: string;
+  team2Score: string;
+  winner: string;
+  margin: string;
+}
+
 export interface Match {
   slot: number;
   time: string;
@@ -11,6 +18,7 @@ export interface Match {
   team2: string;
   group: 'A' | 'B';
   matchType?: string;
+  result?: MatchResult;
 }
 
 export interface DaySchedule {
@@ -28,21 +36,165 @@ export const SCHEDULE: DaySchedule[] = [
     timeRange: '7:00 AM – 5:30 PM',
     matchCount: 12,
     matches: [
-{ slot: 1, time: '7:00 AM', team1: 'Phoenix', team2: 'Bulldozers', group: 'A' },
-      { slot: 2, time: '7:50 AM', team1: 'Monsters', team2: 'OG', group: 'B' },
-      { slot: 3, time: '8:40 AM', team1: 'USA', team2: 'Royal Tiger', group: 'A' },
-      { slot: 4, time: '9:30 AM', team1: 'YKR', team2: 'Super Kings', group: 'B' },
-      { slot: 5, time: '10:20 AM', team1: 'Phoenix', team2: 'Riders', group: 'A' },
-      { slot: 6, time: '11:10 AM', team1: 'Titans', team2: 'Sharks', group: 'B' },
+      {
+        slot: 1,
+        time: '7:00 AM',
+        team1: 'Phoenix',
+        team2: 'Bulldozers',
+        group: 'A',
+        result: {
+          team1Score: '51/3 (6.0 Ov)',
+          team2Score: '28/8 (5.0 Ov)',
+          winner: 'Phoenix',
+          margin: '23 runs',
+        },
+      },
+      {
+        slot: 2,
+        time: '7:50 AM',
+        team1: 'Monsters',
+        team2: 'OG',
+        group: 'B',
+        result: {
+          team1Score: '29/2 (6.0 Ov)',
+          team2Score: '32/3 (4.5 Ov)',
+          winner: 'OG',
+          margin: '5 wickets',
+        },
+      },
+      {
+        slot: 3,
+        time: '8:40 AM',
+        team1: 'USA',
+        team2: 'Royal Tiger',
+        group: 'A',
+        result: {
+          team1Score: '37/2 (3.5 Ov)',
+          team2Score: '35/5 (6.0 Ov)',
+          winner: 'USA',
+          margin: '6 wickets',
+        },
+      },
+      {
+        slot: 4,
+        time: '9:30 AM',
+        team1: 'YKR',
+        team2: 'Super Kings',
+        group: 'B',
+        result: {
+          team1Score: '30/8 (6.0 Ov)',
+          team2Score: '52/3 (6.0 Ov)',
+          winner: 'Super Kings',
+          margin: '22 runs',
+        },
+      },
+      {
+        slot: 5,
+        time: '10:20 AM',
+        team1: 'Phoenix',
+        team2: 'Riders',
+        group: 'A',
+        result: {
+          team1Score: '36/1 (6.0 Ov)',
+          team2Score: '38/0 (3.3 Ov)',
+          winner: 'Riders',
+          margin: '9 wickets',
+        },
+      },
+      {
+        slot: 6,
+        time: '11:10 AM',
+        team1: 'Titans',
+        team2: 'Sharks',
+        group: 'B',
+        result: {
+          team1Score: '24/7 (6.0 Ov)',
+          team2Score: '25/0 (1.3 Ov)',
+          winner: 'Sharks',
+          margin: '8 wickets',
+        },
+      },
       { slot: 0, time: '12:00 PM', team1: 'No Match', team2: 'No Match', group: 'A' },
-      { slot: 7, time: '12:50 PM', team1: 'Super Kings', team2: 'Sharks', group: 'B' },
-      { slot: 8, time: '1:40 PM', team1: 'Phoenix', team2: 'USA', group: 'A' },
-      { slot: 9, time: '2:30 PM', team1: 'Titans', team2: 'OG', group: 'B' },
-      { slot: 10, time: '3:20 PM', team1: 'Riders', team2: 'Bulldozers', group: 'A' },
-      { slot: 11, time: '4:10 PM', team1: 'Monsters', team2: 'YKR', group: 'B' },
-      { slot: 12, time: '5:00 PM', team1: 'Riders', team2: 'RCB', group: 'A' },
-
+      {
+        slot: 7,
+        time: '12:50 PM',
+        team1: 'Super Kings',
+        team2: 'Sharks',
+        group: 'B',
+        result: {
+          team1Score: '46/3 (6.0 Ov)',
+          team2Score: '51/5 (6.0 Ov)',
+          winner: 'Sharks',
+          margin: '5 runs',
+        },
+      },
+      {
+        slot: 8,
+        time: '1:40 PM',
+        team1: 'Phoenix',
+        team2: 'USA',
+        group: 'A',
+        result: {
+          team1Score: '63/2 (6.0 Ov)',
+          team2Score: '60/1 (6.0 Ov)',
+          winner: 'Phoenix',
+          margin: '3 runs',
+        },
+      },
+      {
+        slot: 9,
+        time: '2:30 PM',
+        team1: 'Titans',
+        team2: 'OG',
+        group: 'B',
+        result: {
+          team1Score: '48/4 (6.0 Ov)',
+          team2Score: '49/0 (4.2 Ov)',
+          winner: 'OG',
+          margin: '8 wickets',
+        },
+      },
+      {
+        slot: 10,
+        time: '3:20 PM',
+        team1: 'Riders',
+        team2: 'Bulldozers',
+        group: 'A',
+        result: {
+          team1Score: '35/4 (5.1 Ov)',
+          team2Score: '32/1 (6.0 Ov)',
+          winner: 'Riders',
+          margin: '5 wickets',
+        },
+      },
+      {
+        slot: 11,
+        time: '4:10 PM',
+        team1: 'Monsters',
+        team2: 'YKR',
+        group: 'B',
+        result: {
+          team1Score: '55/4 (6.0 Ov)',
+          team2Score: '56/2 (4.5 Ov)',
+          winner: 'YKR',
+          margin: '6 wickets',
+        },
+      },
+      {
+        slot: 12,
+        time: '5:00 PM',
+        team1: 'Riders',
+        team2: 'RCB',
+        group: 'A',
+        result: {
+          team1Score: '28/8 (5.0 Ov)',
+          team2Score: '45/6 (6.0 Ov)',
+          winner: 'RCB',
+          margin: '17 runs',
+        },
+      },
     ],
+    
   },
   {
     date: '25 Jan',

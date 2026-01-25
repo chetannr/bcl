@@ -21,25 +21,23 @@ export const STANDINGS: GroupStandings[] = [
   {
     group: 'A',
     teams: [
-      { teamAbbreviation: 'Riders', matches: 1, won: 1, lost: 0, nrr: 4.857, points: 2 },
-      { teamAbbreviation: 'USA', matches: 1, won: 1, lost: 0, nrr: 3.819, points: 2 },
-      { teamAbbreviation: 'Phoenix', matches: 2, won: 1, lost: 1, nrr: 0.303, points: 2 },
-
-      { teamAbbreviation: 'RCB', matches: 0, won: 0, lost: 0, nrr: 0.0, points: 0 },
+      { teamAbbreviation: 'Riders', matches: 3, won: 2, lost: 1, nrr: 1.112, points: 4 },
+      { teamAbbreviation: 'Phoenix', matches: 3, won: 2, lost: 1, nrr: -0.356, points: 4 },
+      { teamAbbreviation: 'RCB', matches: 1, won: 1, lost: 0, nrr: 1.9, points: 2 },
+      { teamAbbreviation: 'USA', matches: 2, won: 1, lost: 1, nrr: 1.698, points: 2 },
+      { teamAbbreviation: 'Bulldozers', matches: 2, won: 0, lost: 2, nrr: -2.247, points: 0 },
       { teamAbbreviation: 'Royal Tiger', matches: 1, won: 0, lost: 1, nrr: -3.819, points: 0 },
-      { teamAbbreviation: 'Bulldozers', matches: 1, won: 0, lost: 1, nrr: -3.833, points: 0 },
     ],
   },
   {
     group: 'B',
     teams: [
-      { teamAbbreviation: 'Sharks', matches: 1, won: 1, lost: 0, nrr: 12.667, points: 2 },
-      { teamAbbreviation: 'Super Kings', matches: 1, won: 1, lost: 0, nrr: 3.667, points: 2 },
-      { teamAbbreviation: 'OG', matches: 1, won: 1, lost: 0, nrr: 1.787, points: 2 },
-
-      { teamAbbreviation: 'Monsters', matches: 1, won: 0, lost: 1, nrr: -1.787, points: 0 },
-      { teamAbbreviation: 'YKR', matches: 1, won: 0, lost: 1, nrr: -3.667, points: 0 },
-      { teamAbbreviation: 'Titans', matches: 1, won: 0, lost: 1, nrr: -12.667, points: 0 },
+      { teamAbbreviation: 'Sharks', matches: 2, won: 2, lost: 0, nrr: 4.3, points: 4 },
+      { teamAbbreviation: 'OG', matches: 2, won: 2, lost: 0, nrr: 2.42, points: 4 },
+      { teamAbbreviation: 'Super Kings', matches: 2, won: 1, lost: 1, nrr: 1.417, points: 2 },
+      { teamAbbreviation: 'YKR', matches: 2, won: 1, lost: 1, nrr: -0.978, points: 2 },
+      { teamAbbreviation: 'Monsters', matches: 2, won: 0, lost: 2, nrr: -2.103, points: 0 },
+      { teamAbbreviation: 'Titans', matches: 2, won: 0, lost: 2, nrr: -6.686, points: 0 },
     ],
   },
 ];

@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "generate:routes": "tsr generate",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "update-standings": "node scripts/update-standings.js"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",
