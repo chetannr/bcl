@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
+import { registerServiceWorker } from './lib/service-worker';
 import './index.css';
 
 // Import the generated route tree
@@ -47,3 +48,8 @@ createRoot(rootElement).render(
   </StrictMode>,
 );
 console.log('[Main] Application rendered successfully');
+
+// Register service worker for PWA functionality
+if (import.meta.env.PROD) {
+  registerServiceWorker();
+}
