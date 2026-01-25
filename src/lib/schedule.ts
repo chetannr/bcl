@@ -266,8 +266,23 @@ export const SCHEDULE: DaySchedule[] = [
           margin: '17 runs',
         },
      },
-     { slot: 21, time: '1:40 PM', team1: 'YKR', team2: 'Sharks', group: 'B' },
-     { slot: 22, time: '2:30 PM', team1: 'RCB', team2: 'USA', group: 'A' },
+     { slot: 21, time: '1:40 PM', team1: 'YKR', team2: 'Sharks', group: 'B',
+     result: {
+          team2Score: '56/2 (6.0 Ov)',
+          team1Score: '40/7 (6.0 Ov)',
+          winner: 'Sharks',
+          margin: '17 runs',
+        },
+     },
+     { slot: 22, time: '2:30 PM', team1: 'RCB', team2: 'USA', group: 'A',
+     
+    result: {
+          team1Score: '68/1 (6.0 Ov)',
+          team2Score: '37/3 (6.0 Ov)',
+          winner: 'RCB',
+          margin: '31 runs',
+        },
+     },
     ],
   },
   {
