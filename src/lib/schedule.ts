@@ -214,7 +214,7 @@ export const SCHEDULE: DaySchedule[] = [
      result: {
           team1Score: '44/7 (6.0 Ov)',
           team2Score: '45/2 (5.5 Ov)',
-          winner: 'RCB',
+          winner: 'USA',
           margin: '6 wickets',
         },
      },
