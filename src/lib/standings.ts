@@ -1,7 +1,9 @@
 /**
  * Standings data for BCL 2025 tournament
- * Static standings data - can be replaced with database queries later
+ * Automatically calculated from schedule.ts at runtime
  */
+
+import { SCHEDULE, type DaySchedule } from './schedule';
 
 export interface TeamStanding {
   teamAbbreviation: string;
@@ -17,30 +19,164 @@ export interface GroupStandings {
   teams: TeamStanding[];
 }
 
-export const STANDINGS: GroupStandings[] = [
-  {
-    group: 'A',
-    teams: [
-      { teamAbbreviation: 'Riders', matches: 3, won: 2, lost: 1, nrr: 1.112, points: 4 },
-      { teamAbbreviation: 'Phoenix', matches: 3, won: 2, lost: 1, nrr: -0.356, points: 4 },
-      { teamAbbreviation: 'RCB', matches: 1, won: 1, lost: 0, nrr: 1.9, points: 2 },
-      { teamAbbreviation: 'USA', matches: 2, won: 1, lost: 1, nrr: 1.698, points: 2 },
-      { teamAbbreviation: 'Bulldozers', matches: 2, won: 0, lost: 2, nrr: -2.247, points: 0 },
-      { teamAbbreviation: 'Royal Tiger', matches: 1, won: 0, lost: 1, nrr: -3.819, points: 0 },
-    ],
-  },
-  {
-    group: 'B',
-    teams: [
-      { teamAbbreviation: 'Sharks', matches: 2, won: 2, lost: 0, nrr: 4.3, points: 4 },
-      { teamAbbreviation: 'OG', matches: 2, won: 2, lost: 0, nrr: 2.42, points: 4 },
-      { teamAbbreviation: 'Super Kings', matches: 2, won: 1, lost: 1, nrr: 1.417, points: 2 },
-      { teamAbbreviation: 'YKR', matches: 2, won: 1, lost: 1, nrr: -0.978, points: 2 },
-      { teamAbbreviation: 'Monsters', matches: 2, won: 0, lost: 2, nrr: -2.103, points: 0 },
-      { teamAbbreviation: 'Titans', matches: 2, won: 0, lost: 2, nrr: -6.686, points: 0 },
-    ],
-  },
-];
+// Parse score string like "51/3 (6.0 Ov)" or "35/4 (5.1 Ov)" to get runs and overs
+function parseScore(scoreStr: string): { runs: number; overs: number } {
+  const runsMatch = scoreStr.match(/^(\d+)\//);
+  if (!runsMatch) {
+    throw new Error(`Could not parse runs from: ${scoreStr}`);
+  }
+  const runs = parseInt(runsMatch[1], 10);
+  
+  const oversMatch = scoreStr.match(/\((\d+)\.(\d+)\s*Ov\)/);
+  if (!oversMatch) {
+    throw new Error(`Could not parse overs from: ${scoreStr}`);
+  }
+  const oversInt = parseInt(oversMatch[1], 10);
+  const balls = parseInt(oversMatch[2], 10);
+  // Convert to decimal: X.Y where Y is balls (0-5), so X.Y = X + Y/6
+  const overs = oversInt + balls / 6;
+  
+  return { runs, overs };
+}
+
+/**
+ * Calculate standings from schedule results
+ * This function processes all matches with results and calculates:
+ * - Matches played, wins, losses
+ * - Net Run Rate (NRR)
+ * - Points (2 points per win)
+ */
+export function calculateStandings(schedule: DaySchedule[]): GroupStandings[] {
+  const teamStats = new Map<string, {
+    group: 'A' | 'B';
+    matches: number;
+    won: number;
+    lost: number;
+    runsFor: number;
+    oversFor: number;
+    runsAgainst: number;
+    oversAgainst: number;
+  }>();
+
+  // Initialize all teams
+  const allTeams = {
+    'A': ['Riders', 'RCB', 'Royal Tiger', 'Phoenix', 'Bulldozers', 'USA'],
+    'B': ['Sharks', 'Super Kings', 'OG', 'Monsters', 'YKR', 'Titans']
+  };
+
+  for (const [group, teams] of Object.entries(allTeams)) {
+    for (const team of teams) {
+      teamStats.set(team, {
+        group: group as 'A' | 'B',
+        matches: 0,
+        won: 0,
+        lost: 0,
+        runsFor: 0,
+        oversFor: 0,
+        runsAgainst: 0,
+        oversAgainst: 0,
+      });
+    }
+  }
+
+  // Process all matches with results
+  for (const day of schedule) {
+    for (const match of day.matches) {
+      if (!match.result || match.matchType) continue; // Skip matches without results or playoff matches
+      
+      const { team1, team2, result } = match;
+      
+      if (team1 === 'No Match' || team2 === 'No Match') continue;
+      
+      try {
+        const team1Score = parseScore(result.team1Score);
+        const team2Score = parseScore(result.team2Score);
+        const winner = result.winner;
+        
+        // Update team1 stats
+        const team1Stats = teamStats.get(team1);
+        if (team1Stats) {
+          team1Stats.matches++;
+          team1Stats.runsFor += team1Score.runs;
+          team1Stats.oversFor += team1Score.overs;
+          team1Stats.runsAgainst += team2Score.runs;
+          team1Stats.oversAgainst += team2Score.overs;
+          if (winner === team1) {
+            team1Stats.won++;
+          } else {
+            team1Stats.lost++;
+          }
+        }
+        
+        // Update team2 stats
+        const team2Stats = teamStats.get(team2);
+        if (team2Stats) {
+          team2Stats.matches++;
+          team2Stats.runsFor += team2Score.runs;
+          team2Stats.oversFor += team2Score.overs;
+          team2Stats.runsAgainst += team1Score.runs;
+          team2Stats.oversAgainst += team1Score.overs;
+          if (winner === team2) {
+            team2Stats.won++;
+          } else {
+            team2Stats.lost++;
+          }
+        }
+      } catch (error) {
+        // Skip matches with invalid score format
+        console.warn(`Skipping match ${match.slot} due to score parsing error:`, error);
+      }
+    }
+  }
+
+  // Calculate NRR and points
+  const standings: GroupStandings[] = [
+    { group: 'A', teams: [] },
+    { group: 'B', teams: [] }
+  ];
+
+  for (const [team, stats] of teamStats.entries()) {
+    const runRateFor = stats.oversFor > 0 ? stats.runsFor / stats.oversFor : 0;
+    const runRateAgainst = stats.oversAgainst > 0 ? stats.runsAgainst / stats.oversAgainst : 0;
+    const nrr = runRateFor - runRateAgainst;
+    const points = stats.won * 2;
+    
+    const standing: TeamStanding = {
+      teamAbbreviation: team,
+      matches: stats.matches,
+      won: stats.won,
+      lost: stats.lost,
+      nrr: Math.round(nrr * 1000) / 1000, // Round to 3 decimal places
+      points,
+    };
+    
+    standings.find(s => s.group === stats.group)?.teams.push(standing);
+  }
+
+  // Sort by points (desc), then NRR (desc)
+  for (const group of standings) {
+    group.teams.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      return b.nrr - a.nrr;
+    });
+  }
+
+  return standings;
+}
+
+/**
+ * Get current standings calculated from schedule
+ * This is computed at runtime, so standings always reflect the latest match results
+ */
+export function getStandings(): GroupStandings[] {
+  return calculateStandings(SCHEDULE);
+}
+
+/**
+ * Exported for backward compatibility
+ * Now automatically calculated from schedule
+ */
+export const STANDINGS: GroupStandings[] = getStandings();
 
 /**
  * Get team abbreviation from full team name
