@@ -111,7 +111,7 @@ export const SCHEDULE: DaySchedule[] = [
           team1Score: '24/7 (6.0 Ov)',
           team2Score: '25/0 (1.3 Ov)',
           winner: 'Sharks',
-          margin: '8 wickets',
+          margin: '9 wickets',
         },
       },
       { slot: 0, time: '12:00 PM', team1: 'No Match', team2: 'No Match', group: 'A' },
@@ -151,7 +151,7 @@ export const SCHEDULE: DaySchedule[] = [
           team1Score: '48/4 (6.0 Ov)',
           team2Score: '49/0 (4.2 Ov)',
           winner: 'OG',
-          margin: '8 wickets',
+          margin: '9 wickets',
         },
       },
       {
