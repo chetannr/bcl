@@ -291,7 +291,14 @@ export const SCHEDULE: DaySchedule[] = [
     timeRange: '7:00 AM – 5:00 PM',
     matchCount: 11,
     matches: [
-      { slot: 23, time: '7:00 AM', team1: 'OG', team2: 'Super Kings', group: 'B' },
+      { slot: 23, time: '7:00 AM', team1: 'OG', team2: 'Super Kings', group: 'B',
+      result: {
+          team1Score: '42/5 (6.0 Ov)',
+          team2Score: '57/7 (6.0 Ov)',
+          winner: 'Super Kings',
+          margin: '15 runs',
+        },
+      },
       { slot: 24, time: '7:50 AM', team1: 'RCB', team2: 'Bulldozers', group: 'A' },
       { slot: 25, time: '8:40 AM', team1: 'Titans', team2: 'YKR', group: 'B' },
       { slot: 26, time: '9:30 AM', team1: 'Royal Tiger', team2: 'Bulldozers', group: 'A' },
