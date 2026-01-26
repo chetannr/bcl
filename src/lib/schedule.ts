@@ -348,7 +348,14 @@ export const SCHEDULE: DaySchedule[] = [
           margin: '12 runs',
         },
       },
-      { slot: 30, time: '12:50 PM', team1: 'Riders', team2: 'USA', group: 'A' },
+      { slot: 30, time: '12:50 PM', team1: 'Riders', team2: 'USA', group: 'A',
+      result: {
+          team1Score: '46/2 (5.2 Ov)',
+          team2Score: '43/3 (6.0Ov)',
+          winner: 'Riders',
+          margin: '41 runs',
+        },
+      },
       // Playoff matches
       { slot: 31, time: '2:00 PM', team1: 'TBD', team2: 'TBD', group: 'A', matchType: 'Semi-Final 1' },
       { slot: 32, time: '2:50 PM', team1: 'TBD', team2: 'TBD', group: 'B', matchType: 'Semi-Final 2' },
