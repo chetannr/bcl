@@ -332,7 +332,14 @@ export const SCHEDULE: DaySchedule[] = [
           margin: '5 wickets',
         },
       },
-      { slot: 28, time: '11:10 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A' },
+      { slot: 28, time: '11:10 AM', team1: 'Riders', team2: 'Royal Tiger', group: 'A',
+      result: {
+          team1Score: '24/4 (6.0 Ov)',
+          team2Score: '25/1 (2.3 Ov)',
+          winner: 'Riders',
+          margin: '7 wickets',
+        },
+      },
       { slot: 29, time: '12:00 PM', team1: 'Monsters', team2: 'Titans', group: 'B' },
       { slot: 30, time: '12:50 PM', team1: 'Riders', team2: 'USA', group: 'A' },
       // Playoff matches
