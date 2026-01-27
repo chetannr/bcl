@@ -106,7 +106,7 @@ function SchedulePage() {
             </button>
           </div>
           <p className={`text-sm ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
-            Bellandur Cricket League
+            Bellandur Cricket League: Short Cricket
           </p>
         </header>
 
