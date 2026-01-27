@@ -1,0 +1,16 @@
+{
+  "id": "short-cricket-2026",
+  "name": "BCL Short Cricket 2026",
+  "type": "short-cricket",
+  "year": 2026,
+  "status": "completed",
+  "startDate": "2026-01-24",
+  "endDate": "2026-01-26",
+  "groupStructure": "two-groups",
+  "totalTeams": 12,
+  "groups": ["A", "B"],
+  "teams": {
+    "A": ["Riders", "RCB", "Royal Tiger", "Phoenix", "Bulldozers", "USA"],
+    "B": ["Sharks", "Super Kings", "OG", "Monsters", "YKR", "Titans"]
+  }
+}

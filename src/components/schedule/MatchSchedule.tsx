@@ -1,27 +1,30 @@
 import { useState, useMemo } from 'react';
-import { SCHEDULE } from '../../lib/schedule';
+import { getSchedule, type DaySchedule } from '../../lib/schedule';
 import { getTeamInfo } from '../../utils/team-mapping';
 import { getAssetPath } from '../../utils/assets';
 import { ChevronDown, Table2, LayoutGrid } from 'lucide-react';
 
 interface MatchScheduleProps {
   theme: 'dark' | 'light';
+  tournamentId: string;
 }
 
 type ViewMode = 'card' | 'table';
 
-export function MatchSchedule({ theme }: MatchScheduleProps) {
+export function MatchSchedule({ theme, tournamentId }: MatchScheduleProps) {
   const isDark = theme === 'dark';
   const [selectedTeam, setSelectedTeam] = useState<string>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('card');
 
+  const schedule = useMemo(() => getSchedule(tournamentId), [tournamentId]);
+
   // Get all unique teams from schedule, sorted alphabetically by full name
   const allTeams = useMemo(() => {
     const teams = new Set<string>();
-    SCHEDULE.forEach((day) => {
+    schedule.forEach((day) => {
       day.matches.forEach((match) => {
-        if (match.team1 !== 'TBD') teams.add(match.team1);
-        if (match.team2 !== 'TBD') teams.add(match.team2);
+        if (match.team1 !== 'TBD' && match.team1 !== 'No Match') teams.add(match.team1);
+        if (match.team2 !== 'TBD' && match.team2 !== 'No Match') teams.add(match.team2);
       });
     });
     return Array.from(teams).sort((a, b) => {
@@ -29,24 +32,24 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
       const teamBName = getTeamInfo(b)?.fullName || b;
       return teamAName.localeCompare(teamBName);
     });
-  }, []);
+  }, [schedule]);
 
   // Filter schedule based on selected team
   const filteredSchedule = useMemo(() => {
     if (selectedTeam === 'all') {
-      return SCHEDULE;
+      return schedule;
     }
 
-    return SCHEDULE.map((daySchedule) => ({
+    return schedule.map((daySchedule) => ({
       ...daySchedule,
       matches: daySchedule.matches.filter(
         (match) => match.team1 === selectedTeam || match.team2 === selectedTeam
       ),
     })).filter((daySchedule) => daySchedule.matches.length > 0);
-  }, [selectedTeam]);
+  }, [selectedTeam, schedule]);
 
   // Render match card
-  const renderMatchCard = (match: typeof SCHEDULE[0]['matches'][0]) => {
+  const renderMatchCard = (match: DaySchedule['matches'][0]) => {
     const team1Info = getTeamInfo(match.team1);
     const team2Info = getTeamInfo(match.team2);
     const isTBD = match.team1 === 'TBD' || match.team2 === 'TBD';
@@ -63,11 +66,11 @@ export function MatchSchedule({ theme }: MatchScheduleProps) {
         <div className="mb-2 flex justify-between items-center gap-2">
           {match.matchType ? (
             <span className={`text-xs ${isDark ? 'text-white' : 'text-neutral-600'}`}>
-              {match.matchType} · Match {match.slot} of {SCHEDULE.reduce((sum, day) => sum + day.matchCount, 0)}
+              {match.matchType} · Match {match.slot} of {schedule.reduce((sum, day) => sum + day.matchCount, 0)}
             </span>
           ) : (
             <span className={`text-xs ${isDark ? 'text-white' : 'text-neutral-600'}`}>
-              Match {match.slot} of {SCHEDULE.reduce((sum, day) => sum + day.matchCount, 0)}
+              Match {match.slot} of {schedule.reduce((sum, day) => sum + day.matchCount, 0)}
             </span>
           )}
           {!match.matchType && (

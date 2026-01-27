@@ -1,0 +1,14 @@
+{
+  "id": "long-pitch-2026",
+  "name": "BCL Long Pitch 2026",
+  "type": "long-pitch",
+  "year": 2026,
+  "status": "upcoming",
+  "startDate": "2026-10-01",
+  "groupStructure": "single",
+  "totalTeams": 8,
+  "groups": ["All"],
+  "teams": {
+    "All": []
+  }
+}

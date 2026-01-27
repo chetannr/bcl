@@ -1,9 +1,10 @@
 /**
- * Standings data for BCL 2026 tournament
- * Automatically calculated from schedule.ts at runtime
+ * Standings data for BCL tournaments
+ * Automatically calculated from schedule at runtime
  */
 
-import { SCHEDULE, type DaySchedule } from './schedule';
+import { type DaySchedule } from './schedule';
+import { type Tournament } from './tournaments';
 
 export interface TeamStanding {
   teamAbbreviation: string;
@@ -15,7 +16,7 @@ export interface TeamStanding {
 }
 
 export interface GroupStandings {
-  group: 'A' | 'B';
+  group: string;
   teams: TeamStanding[];
 }
 
@@ -51,9 +52,9 @@ function parseScore(scoreStr: string): { runs: number; overs: number; wickets: n
  * - Net Run Rate (NRR)
  * - Points (2 points per win)
  */
-export function calculateStandings(schedule: DaySchedule[]): GroupStandings[] {
+export function calculateStandings(schedule: DaySchedule[], tournament: Tournament): GroupStandings[] {
   const teamStats = new Map<string, {
-    group: 'A' | 'B';
+    group: string;
     matches: number;
     won: number;
     lost: number;
@@ -63,16 +64,12 @@ export function calculateStandings(schedule: DaySchedule[]): GroupStandings[] {
     oversAgainst: number;
   }>();
 
-  // Initialize all teams
-  const allTeams = {
-    'A': ['Riders', 'RCB', 'Royal Tiger', 'Phoenix', 'Bulldozers', 'USA'],
-    'B': ['Sharks', 'Super Kings', 'OG', 'Monsters', 'YKR', 'Titans']
-  };
-
-  for (const [group, teams] of Object.entries(allTeams)) {
+  // Initialize all teams from tournament configuration
+  for (const group of tournament.groups) {
+    const teams = tournament.teams[group] || [];
     for (const team of teams) {
       teamStats.set(team, {
-        group: group as 'A' | 'B',
+        group: group,
         matches: 0,
         won: 0,
         lost: 0,
@@ -173,10 +170,10 @@ export function calculateStandings(schedule: DaySchedule[]): GroupStandings[] {
   }
 
   // Calculate NRR and points
-  const standings: GroupStandings[] = [
-    { group: 'A', teams: [] },
-    { group: 'B', teams: [] }
-  ];
+  const standings: GroupStandings[] = tournament.groups.map(group => ({
+    group,
+    teams: []
+  }));
 
   for (const [team, stats] of teamStats.entries()) {
     const runRateFor = stats.oversFor > 0 ? stats.runsFor / stats.oversFor : 0;
@@ -211,15 +208,9 @@ export function calculateStandings(schedule: DaySchedule[]): GroupStandings[] {
  * Get current standings calculated from schedule
  * This is computed at runtime, so standings always reflect the latest match results
  */
-export function getStandings(): GroupStandings[] {
-  return calculateStandings(SCHEDULE);
+export function getStandings(schedule: DaySchedule[], tournament: Tournament): GroupStandings[] {
+  return calculateStandings(schedule, tournament);
 }
-
-/**
- * Exported for backward compatibility
- * Now automatically calculated from schedule
- */
-export const STANDINGS: GroupStandings[] = getStandings();
 
 /**
  * Get team abbreviation from full team name

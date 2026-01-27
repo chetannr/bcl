@@ -1,16 +1,27 @@
-import { STANDINGS } from '../../lib/standings';
+import { useMemo } from 'react';
+import { getStandings } from '../../lib/standings';
+import { getSchedule } from '../../lib/schedule';
+import { getTournament } from '../../lib/tournaments';
 import { getTeamInfo } from '../../utils/team-mapping';
 import { getAssetPath } from '../../utils/assets';
 
 interface StandingsTabProps {
   theme: 'dark' | 'light';
+  tournamentId: string;
 }
 
-export function StandingsTab({ theme }: StandingsTabProps) {
+export function StandingsTab({ theme, tournamentId }: StandingsTabProps) {
   const isDark = theme === 'dark';
 
+  const standings = useMemo(() => {
+    const tournament = getTournament(tournamentId);
+    if (!tournament) return [];
+    const schedule = getSchedule(tournamentId);
+    return getStandings(schedule, tournament);
+  }, [tournamentId]);
+
   // Sort teams by rank: points (desc), then NRR (desc)
-  function sortTeamsByRank(teams: typeof STANDINGS[0]['teams']) {
+  function sortTeamsByRank(teams: typeof standings[0]['teams']) {
     return [...teams].sort((a, b) => {
       if (b.points !== a.points) return b.points - a.points;
       return b.nrr - a.nrr;
@@ -20,7 +31,7 @@ export function StandingsTab({ theme }: StandingsTabProps) {
   return (
     <section className="space-y-8" aria-label="Tournament standings">
       {/* Standings Tables */}
-      {STANDINGS.map((groupStandings) => {
+      {standings.map((groupStandings) => {
         const sortedTeams = sortTeamsByRank(groupStandings.teams);
         
         return (

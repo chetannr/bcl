@@ -1,12 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { MatchSchedule } from '../components/schedule/MatchSchedule';
 import { TeamsTab } from '../components/schedule/TeamsTab';
 import { StandingsTab } from '../components/schedule/StandingsTab';
 import { PredictionTab } from '../components/schedule/PredictionTab';
+import { TournamentSelector } from '../components/schedule/TournamentSelector';
 import { useSEO, useStructuredData, generateBreadcrumbSchema } from '../lib/seo';
 import { getAssetPath } from '../utils/assets';
+import { getDefaultTournament, getTournament, isTournamentActive } from '../lib/tournaments';
 
 export const Route = createFileRoute('/')({
   component: SchedulePage,
@@ -19,6 +21,28 @@ function SchedulePage() {
   const [activeTab, setActiveTab] = useState<Tab>('matches');
   const [theme, setTheme] = useState<Theme>('dark');
   const tabListRef = useRef<HTMLDivElement>(null);
+  
+  // Tournament state - load from localStorage or use default
+  const [selectedTournamentId, setSelectedTournamentId] = useState<string>(() => {
+    const stored = localStorage.getItem('selectedTournamentId');
+    if (stored) {
+      const tournament = getTournament(stored);
+      if (tournament) return stored;
+    }
+    return getDefaultTournament().id;
+  });
+
+  const selectedTournament = useMemo(() => getTournament(selectedTournamentId), [selectedTournamentId]);
+  const showPredictions = useMemo(() => isTournamentActive(selectedTournamentId), [selectedTournamentId]);
+
+  function handleTournamentChange(tournamentId: string) {
+    setSelectedTournamentId(tournamentId);
+    localStorage.setItem('selectedTournamentId', tournamentId);
+    // If predictions tab is active and tournament doesn't support it, switch to matches
+    if (activeTab === 'predictions' && !isTournamentActive(tournamentId)) {
+      setActiveTab('matches');
+    }
+  }
 
   // SEO Configuration
   useSEO({
@@ -38,12 +62,17 @@ function SchedulePage() {
     'breadcrumb-schema'
   );
 
-  const tabs: { id: Tab; label: string }[] = [
-    { id: 'matches', label: 'MATCHES' },
-    { id: 'teams', label: 'TEAMS' },
-    { id: 'standings', label: 'STANDINGS' },
-    { id: 'predictions', label: 'PREDICTIONS' },
-  ];
+  const tabs: { id: Tab; label: string }[] = useMemo(() => {
+    const baseTabs = [
+      { id: 'matches' as Tab, label: 'MATCHES' },
+      { id: 'teams' as Tab, label: 'TEAMS' },
+      { id: 'standings' as Tab, label: 'STANDINGS' },
+    ];
+    if (showPredictions) {
+      baseTabs.push({ id: 'predictions' as Tab, label: 'PREDICTIONS' });
+    }
+    return baseTabs;
+  }, [showPredictions]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -87,26 +116,34 @@ function SchedulePage() {
 
         {/* Header */}
         <header className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b px-4 py-4`}>
-          <div className="flex items-center justify-between mb-2">
-            <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-              BCL 2026
-            </h1>
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-lg transition-colors ${
-                isDark
-                  ? 'text-neutral-400 hover:text-white hover:bg-neutral-700'
-                  : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
-              }`}
-              aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
-              aria-pressed={isDark}
-              type="button"
-            >
-              {isDark ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
-            </button>
+          <div className="flex flex-col items-center gap-4 mb-2">
+            <div className="w-full flex items-center justify-between gap-4 mb-2">
+              <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+                {selectedTournament?.name || 'BCL 2026'}
+              </h1>
+              <button
+                  onClick={toggleTheme}
+                  className={`p-2 rounded-lg transition-colors ${
+                    isDark
+                      ? 'text-neutral-400 hover:text-white hover:bg-neutral-700'
+                      : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
+                  }`}
+                  aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+                  aria-pressed={isDark}
+                  type="button"
+                >
+                  {isDark ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
+                </button>
+              </div>
+              <TournamentSelector
+                selectedTournamentId={selectedTournamentId}
+                onTournamentChange={handleTournamentChange}
+                theme={theme}
+              />
+              
           </div>
-          <p className={`text-sm ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
-            Bellandur Cricket League: Short Cricket
+          <p className={`text-sm w-full text-center ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+            Bellandur Cricket League
           </p>
         </header>
 
@@ -156,7 +193,7 @@ function SchedulePage() {
             aria-labelledby="matches-tab"
             hidden={activeTab !== 'matches'}
           >
-            {activeTab === 'matches' && <MatchSchedule theme={theme} />}
+            {activeTab === 'matches' && <MatchSchedule theme={theme} tournamentId={selectedTournamentId} />}
           </div>
           <div
             role="tabpanel"
@@ -164,7 +201,7 @@ function SchedulePage() {
             aria-labelledby="teams-tab"
             hidden={activeTab !== 'teams'}
           >
-            {activeTab === 'teams' && <TeamsTab theme={theme} />}
+            {activeTab === 'teams' && <TeamsTab theme={theme} tournamentId={selectedTournamentId} />}
           </div>
           <div
             role="tabpanel"
@@ -172,16 +209,18 @@ function SchedulePage() {
             aria-labelledby="standings-tab"
             hidden={activeTab !== 'standings'}
           >
-            {activeTab === 'standings' && <StandingsTab theme={theme} />}
+            {activeTab === 'standings' && <StandingsTab theme={theme} tournamentId={selectedTournamentId} />}
           </div>
-          <div
-            role="tabpanel"
-            id="predictions-panel"
-            aria-labelledby="predictions-tab"
-            hidden={activeTab !== 'predictions'}
-          >
-            {activeTab === 'predictions' && <PredictionTab theme={theme} />}
-          </div>
+          {showPredictions && (
+            <div
+              role="tabpanel"
+              id="predictions-panel"
+              aria-labelledby="predictions-tab"
+              hidden={activeTab !== 'predictions'}
+            >
+              {activeTab === 'predictions' && <PredictionTab theme={theme} tournamentId={selectedTournamentId} />}
+            </div>
+          )}
         </main>
       </div>
     </div>

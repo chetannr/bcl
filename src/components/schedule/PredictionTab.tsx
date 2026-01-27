@@ -1,10 +1,13 @@
-import { STANDINGS } from '../../lib/standings';
-import { SCHEDULE } from '../../lib/schedule';
+import { useMemo } from 'react';
+import { getStandings } from '../../lib/standings';
+import { getSchedule } from '../../lib/schedule';
+import { getTournament, isTournamentActive } from '../../lib/tournaments';
 import { getTeamInfo } from '../../utils/team-mapping';
 import { getAssetPath } from '../../utils/assets';
 
 interface PredictionTabProps {
   theme: 'dark' | 'light';
+  tournamentId: string;
 }
 
 interface TeamPrediction {
@@ -23,12 +26,30 @@ interface TeamPrediction {
   }>;
 }
 
-export function PredictionTab({ theme }: PredictionTabProps) {
+export function PredictionTab({ theme, tournamentId }: PredictionTabProps) {
   const isDark = theme === 'dark';
+  const tournament = useMemo(() => getTournament(tournamentId), [tournamentId]);
+
+  // Only show predictions for active tournaments
+  if (!tournament || !isTournamentActive(tournamentId)) {
+    return (
+      <section className="space-y-6" aria-label="Tournament predictions">
+        <div className={`text-center py-8 ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
+          <p>Predictions are only available for active tournaments.</p>
+        </div>
+      </section>
+    );
+  }
+
+  const schedule = useMemo(() => getSchedule(tournamentId), [tournamentId]);
+  const standings = useMemo(() => {
+    if (!tournament) return [];
+    return getStandings(schedule, tournament);
+  }, [schedule, tournament]);
 
   // Get all teams and their remaining matches
-  function getTeamPredictions(group: 'A' | 'B'): TeamPrediction[] {
-    const groupStandings = STANDINGS.find(s => s.group === group);
+  function getTeamPredictions(group: string): TeamPrediction[] {
+    const groupStandings = standings.find(s => s.group === group);
     if (!groupStandings) return [];
 
     // Sort teams by rank
@@ -38,7 +59,7 @@ export function PredictionTab({ theme }: PredictionTabProps) {
     });
 
     // Get all matches for this group
-    const allMatches = SCHEDULE.flatMap(day => day.matches)
+    const allMatches = schedule.flatMap(day => day.matches)
       .filter(m => m.group === group && !m.matchType);
 
     // Calculate total matches per team (should be 5 in round-robin)
@@ -59,7 +80,7 @@ export function PredictionTab({ theme }: PredictionTabProps) {
       const keyMatches = remainingMatches.map(match => {
         const opponent = match.team1 === team ? match.team2 : match.team1;
         const opponentRank = sortedTeams.findIndex(t => t.teamAbbreviation === opponent) + 1;
-        const daySchedule = SCHEDULE.find(day => day.matches.includes(match));
+        const daySchedule = schedule.find(day => day.matches.includes(match));
         
         let importance: 'critical' | 'important' | 'normal' = 'normal';
         if (top4Teams.includes(opponent) && opponentRank <= 3) {
@@ -144,7 +165,7 @@ export function PredictionTab({ theme }: PredictionTabProps) {
       </header>
 
       {/* Predictions for each group */}
-      {(['A', 'B'] as const).map((group) => {
+      {tournament.groups.map((group) => {
         const predictions = getTeamPredictions(group);
         
         return (
