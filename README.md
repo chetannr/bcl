@@ -1,4 +1,4 @@
-# BCL 2025 Bidding System
+# BCL 2026 Bidding System
 
 A professional cricket auction web application with dual-screen capability for managing player auctions and team budgets.
 
@@ -93,4 +93,4 @@ npm run preview
 
 ## License
 
-Private project for BCL 2025 auction.
+Private project for BCL 2026 auction.

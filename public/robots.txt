@@ -1,4 +1,4 @@
-# robots.txt for BCL 2025
+# robots.txt for BCL 2026
 User-agent: *
 Allow: /
 

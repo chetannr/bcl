@@ -13,7 +13,7 @@ function HomePage() {
   // SEO Configuration
   useSEO({
     title: 'Auction Management System',
-    description: 'BCL 2025 Professional cricket auction management system. Access admin controls, display views, and post-auction management tools.',
+    description: 'BCL 2026 Professional cricket auction management system. Access admin controls, display views, and post-auction management tools.',
     keywords: 'cricket auction, bidding system, team management, player auction, BCL admin',
     url: 'https://bclclub.in/home',
     type: 'website',
@@ -33,7 +33,7 @@ function HomePage() {
       <main className="max-w-2xl w-full bg-white rounded-xl shadow-xl p-8 md:p-12">
         <header className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-2 text-neutral-900">
-            BCL 2025
+            BCL 2026
           </h1>
           <h2 className="text-2xl md:text-3xl font-semibold text-neutral-600 mb-4">
             Bidding System

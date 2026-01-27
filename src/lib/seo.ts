@@ -16,9 +16,9 @@ export interface SEOConfig {
 }
 
 const DEFAULT_CONFIG = {
-  siteName: 'BCL 2025',
+  siteName: 'BCL 2026',
   siteUrl: 'https://bclclub.in',
-  defaultTitle: 'BCL 2025 - Bellandur Cricket League',
+  defaultTitle: 'BCL 2026 - Bellandur Cricket League',
   defaultDescription: 'Bellandur Cricket League 2025 - View live match schedules, team standings, player rosters, and tournament information.',
   defaultImage: 'https://bclclub.in/favicon.png',
   twitterHandle: '@bclclub',

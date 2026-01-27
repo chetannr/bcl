@@ -1,4 +1,4 @@
-# Testing Guide - BCL 2025 Auction Flow
+# Testing Guide - BCL 2026 Auction Flow
 
 This document outlines the complete testing procedure for the auction bidding system.
 

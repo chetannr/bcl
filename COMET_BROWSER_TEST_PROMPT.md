@@ -1,4 +1,4 @@
-# Comet Browser Test Prompt for BCL 2025 Bidding System
+# Comet Browser Test Prompt for BCL 2026 Bidding System
 
 ## Server Information
 - **URL**: http://localhost:5173/
@@ -9,7 +9,7 @@
 ### 1. Landing Page (/) - http://localhost:5173/
 **Test Steps:**
 1. Navigate to the root URL
-2. Verify the page loads with "BCL 2025 Bidding System" title
+2. Verify the page loads with "BCL 2026 Bidding System" title
 3. Check that three buttons are visible:
    - "Admin Control Panel" button
    - "Display View (Full Screen)" button  
@@ -45,7 +45,7 @@
 ### 2. Admin Auction Control Panel (/admin/auction) - http://localhost:5173/admin/auction
 **Test Steps:**
 1. Navigate to /admin/auction
-2. Verify the page loads with "BCL 2025 Auction Control" header
+2. Verify the page loads with "BCL 2026 Auction Control" header
 3. Check that the page displays:
    - Team Budget Panel at the top
    - Player Queue on the left (if data exists)

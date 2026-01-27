@@ -1,4 +1,4 @@
-// Service Worker for BCL 2025 PWA
+// Service Worker for BCL 2026 PWA
 const CACHE_NAME = 'bcl-2025-v1';
 const RUNTIME_CACHE = 'bcl-runtime-v1';
 

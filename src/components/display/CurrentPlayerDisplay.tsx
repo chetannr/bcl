@@ -217,7 +217,7 @@ function WelcomeScreen() {
         >
           <img
             src={getAssetPath('/assets/welcome.jpeg')}
-            alt="Welcome to BCL 2025 Auction"
+            alt="Welcome to BCL 2026 Auction"
             className="w-full max-w-[384px] h-auto object-contain rounded-xl"
             style={{
               filter: 'drop-shadow(0 0 20px rgba(57, 255, 20, 0.8))',

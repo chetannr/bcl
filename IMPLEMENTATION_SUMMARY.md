@@ -1,8 +1,8 @@
-# SEO & Accessibility Implementation Summary - BCL 2025
+# SEO & Accessibility Implementation Summary - BCL 2026
 
 ## Overview
 
-This document summarizes the comprehensive SEO, semantic HTML, ARIA, and accessibility improvements implemented in the BCL 2025 application.
+This document summarizes the comprehensive SEO, semantic HTML, ARIA, and accessibility improvements implemented in the BCL 2026 application.
 
 ## What Was Implemented
 

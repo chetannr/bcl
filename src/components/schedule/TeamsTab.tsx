@@ -99,7 +99,7 @@ export function TeamsTab({ theme }: TeamsTabProps) {
       {/* Header */}
       <header className="text-center space-y-2">
         <h2 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-          BCL 2025 Teams
+          BCL 2026 Teams
         </h2>
         <p className={`text-sm ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>
           Competing in two groups for ultimate glory

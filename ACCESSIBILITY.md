@@ -1,6 +1,6 @@
-# Accessibility Guide - BCL 2025
+# Accessibility Guide - BCL 2026
 
-This document outlines the accessibility features implemented in the BCL 2025 application and best practices for maintaining accessibility.
+This document outlines the accessibility features implemented in the BCL 2026 application and best practices for maintaining accessibility.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ This document outlines the accessibility features implemented in the BCL 2025 ap
 
 ## Overview
 
-The BCL 2025 application is built with accessibility as a core principle, following WCAG 2.1 Level AA guidelines. We aim to provide an inclusive experience for all users, including those using assistive technologies.
+The BCL 2026 application is built with accessibility as a core principle, following WCAG 2.1 Level AA guidelines. We aim to provide an inclusive experience for all users, including those using assistive technologies.
 
 ## Semantic HTML
 
@@ -36,7 +36,7 @@ We use semantic HTML5 elements throughout the application:
 
 ```tsx
 <header>
-  <h1>BCL 2025</h1>
+  <h1>BCL 2026</h1>
   <nav aria-label="Main navigation">
     {/* Navigation items */}
   </nav>

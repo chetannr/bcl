@@ -1,6 +1,6 @@
 # GitHub Pages Deployment Plan for BCL Project
 
-> **Goal**: Deploy the BCL 2025 Bidding application to GitHub Pages with automated CI/CD pipeline.
+> **Goal**: Deploy the BCL 2026 Bidding application to GitHub Pages with automated CI/CD pipeline.
 
 ---
 

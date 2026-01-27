@@ -1,4 +1,4 @@
-# BCL 2025 Auction - Admin User Guide
+# BCL 2026 Auction - Admin User Guide
 
 Complete guide for administrators managing the cricket player auction system.
 
@@ -464,4 +464,4 @@ For technical issues or questions:
 
 **Last Updated**: December 2024  
 **Version**: 1.0  
-**Application**: BCL 2025 Bidding System
+**Application**: BCL 2026 Bidding System

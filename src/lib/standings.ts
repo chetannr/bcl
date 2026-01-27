@@ -1,5 +1,5 @@
 /**
- * Standings data for BCL 2025 tournament
+ * Standings data for BCL 2026 tournament
  * Automatically calculated from schedule.ts at runtime
  */
 

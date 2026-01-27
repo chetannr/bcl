@@ -1,6 +1,6 @@
 /**
  * Match schedule data
- * Static schedule for BCL 2025 tournament
+ * Static schedule for BCL 2026 tournament
  * Round Robin: 30 group stage matches (15 per group) + 3 playoffs = 33 total
  */
 

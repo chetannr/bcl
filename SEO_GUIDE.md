@@ -1,6 +1,6 @@
-# SEO Guide - BCL 2025
+# SEO Guide - BCL 2026
 
-This document outlines the SEO strategies and implementations in the BCL 2025 application.
+This document outlines the SEO strategies and implementations in the BCL 2026 application.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ This document outlines the SEO strategies and implementations in the BCL 2025 ap
 
 ## Overview
 
-The BCL 2025 application implements comprehensive SEO best practices to ensure maximum visibility in search engines and optimal sharing on social media platforms.
+The BCL 2026 application implements comprehensive SEO best practices to ensure maximum visibility in search engines and optimal sharing on social media platforms.
 
 ## Meta Tags
 
@@ -37,7 +37,7 @@ Using the `useSEO` hook from `src/lib/seo.ts`:
 ```tsx
 useSEO({
   title: 'Match Schedule & Standings',
-  description: 'View the complete BCL 2025 match schedule...',
+  description: 'View the complete BCL 2026 match schedule...',
   keywords: 'cricket matches, tournament schedule',
   url: 'https://bclclub.in/',
   type: 'website',
@@ -110,7 +110,7 @@ With search action for Google:
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "BCL 2025",
+  "name": "BCL 2026",
   "url": "https://bclclub.in",
   "potentialAction": {
     "@type": "SearchAction",
@@ -145,12 +145,12 @@ useStructuredData(
 ```html
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://bclclub.in/" />
-<meta property="og:title" content="BCL 2025 - Bellandur Cricket League" />
+<meta property="og:title" content="BCL 2026 - Bellandur Cricket League" />
 <meta property="og:description" content="..." />
 <meta property="og:image" content="https://bclclub.in/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:site_name" content="BCL 2025" />
+<meta property="og:site_name" content="BCL 2026" />
 <meta property="og:locale" content="en_IN" />
 ```
 
@@ -229,7 +229,7 @@ Clean, descriptive URLs:
 Proper heading structure (h1 → h2 → h3):
 
 ```tsx
-<h1>BCL 2025</h1>
+<h1>BCL 2026</h1>
   <h2>Match Schedule</h2>
     <h3>January 25, 2025</h3>
 ```

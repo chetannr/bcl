@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide covers deploying the BCL 2025 Bidding application to various hosting platforms.
+This guide covers deploying the BCL 2026 Bidding application to various hosting platforms.
 
 ## Prerequisites
 

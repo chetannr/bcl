@@ -13,7 +13,7 @@ export function AuctionStatus() {
         </span>
       </div>
       <div className="text-white/90 text-sm">
-        BCL 2025 Auction
+        BCL 2026 Auction
       </div>
     </div>
   );

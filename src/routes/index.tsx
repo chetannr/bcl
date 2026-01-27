@@ -6,6 +6,7 @@ import { TeamsTab } from '../components/schedule/TeamsTab';
 import { StandingsTab } from '../components/schedule/StandingsTab';
 import { PredictionTab } from '../components/schedule/PredictionTab';
 import { useSEO, useStructuredData, generateBreadcrumbSchema } from '../lib/seo';
+import { getAssetPath } from '../utils/assets';
 
 export const Route = createFileRoute('/')({
   component: SchedulePage,
@@ -22,7 +23,7 @@ function SchedulePage() {
   // SEO Configuration
   useSEO({
     title: 'Match Schedule & Standings',
-    description: 'View the complete BCL 2025 match schedule, team standings, and tournament information. Track your favorite teams and upcoming matches.',
+    description: 'View the complete BCL 2026 match schedule, team standings, and tournament information. Track your favorite teams and upcoming matches.',
     keywords: 'BCL schedule, cricket matches, team standings, tournament schedule, cricket league standings',
     url: 'https://bclclub.in/',
     type: 'website',
@@ -67,11 +68,28 @@ function SchedulePage() {
   return (
     <div className={`min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-50'}`}>
       <div className="max-w-md mx-auto">
+        {/* Champions Hero Section - Mobile First */}
+        <section 
+          className="relative w-full bg-linear-to-br from-orange-500/10 to-blue-600/10" 
+          aria-label="BCL Short Cricket 2026 Champions"
+        >
+          <div className="relative w-full">
+            <img
+              src={getAssetPath('/assets/bcl-short-cricket-2026-champions.png')}
+              alt="BCL Short Cricket 2026 Champions - Bellandur Sharks team celebrating with trophy. The team is holding a golden trophy and wearing orange and blue uniforms with 'SHARKS' branding. A banner displays 'BCL SHORT CRICKET 2026 CHAMPIONS'."
+              className="w-full h-auto object-contain"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </div>
+        </section>
+
         {/* Header */}
         <header className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b px-4 py-4`}>
           <div className="flex items-center justify-between mb-2">
             <h1 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-neutral-900'}`}>
-              BCL 2025
+              BCL 2026
             </h1>
             <button
               onClick={toggleTheme}
@@ -109,7 +127,7 @@ function SchedulePage() {
                 id={`${tab.id}-tab`}
                 tabIndex={activeTab === tab.id ? 0 : -1}
                 className={`
-                  flex-shrink-0 py-3 px-4 text-center text-sm font-medium transition-colors relative whitespace-nowrap
+                  shrink-0 py-3 px-4 text-center text-sm font-medium transition-colors relative whitespace-nowrap
                   ${
                     activeTab === tab.id
                       ? isDark

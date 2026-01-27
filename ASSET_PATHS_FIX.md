@@ -112,7 +112,7 @@ Before:
 ```tsx
 <img
   src="/assets/welcome.jpeg"
-  alt="Welcome to BCL 2025 Auction"
+  alt="Welcome to BCL 2026 Auction"
 />
 ```
 
@@ -122,7 +122,7 @@ import { getAssetPath } from '../../utils/assets';
 
 <img
   src={getAssetPath('/assets/welcome.jpeg')}
-  alt="Welcome to BCL 2025 Auction"
+  alt="Welcome to BCL 2026 Auction"
 />
 ```
 
